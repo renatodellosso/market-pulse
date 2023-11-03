@@ -1,17 +1,18 @@
 import { ObjectId } from "mongodb";
+import { type DefaultUser, type DefaultSession } from "next-auth";
 
-interface NamedId {
+export interface NamedId {
     name: string,
     _id: ObjectId
 }
 
-declare module "next-auth/react" {
-    interface User {
-        _id: ObjectId,
-        name: string,
-        email: string,
-        image: string,
-        watchLists: NamedId[],
-        reports: NamedId[],
+declare module "next-auth" {
+    interface User extends DefaultUser {
+        watchlists: NamedId[],
+        reports: NamedId[]   
+    }
+
+    interface Session extends DefaultSession {
+        user: User
     }
 }

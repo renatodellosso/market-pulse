@@ -5,8 +5,13 @@ import { ObjectId, WithId } from "mongodb";
 export async function getUser(id: string): Promise<WithId<User> | null> {
     let users = await getUsers();
 
-    console.log(id);
     return users.findOne({ _id: ObjectId.createFromHexString(id) });
+}
+
+export async function getUserByEmail(email: string): Promise<WithId<User> | null> {
+    let users = await getUsers();
+
+    return users.findOne({ email: email });
 }
 
 export async function initUser(user: User) {
@@ -18,4 +23,22 @@ export async function initUser(user: User) {
             watchlists: []
         }
     });
+}
+
+export async function newWatchlist(userId: string): Promise<ObjectId | null> {
+    let users = await getUsers();
+
+    let result = await users.updateOne({ _id: ObjectId.createFromHexString(userId) }, {
+        $push: {
+            watchlists: {
+                $each: [{
+                    name: "New Watchlist",
+                    _id: new ObjectId()
+                }],
+                $position: 0
+            }
+        }
+    });
+
+    return result.modifiedCount > 0 ? result.upsertedId : null;
 }

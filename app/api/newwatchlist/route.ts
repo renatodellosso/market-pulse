@@ -5,8 +5,10 @@ import { getUser, newWatchlist } from "@/lib/db/users";
 import { NextResponse } from "next/server";
 import { getSession } from "next-auth/react";
 
-export async function GET(req: NextApiRequest) {
-    const session = await getServerSession(req);
+export async function GET(req: NextApiRequest, res: NextApiResponse) {
+    console.log("GET /api/newwatchlist");
+    console.log(res);
+    const session = await getServerSession(req, res, authOptions);
 
     console.log(session);
 

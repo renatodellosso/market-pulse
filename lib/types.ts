@@ -3,7 +3,14 @@ import { type DefaultUser, type DefaultSession } from "next-auth";
 
 export interface NamedId {
     name: string,
-    _id: ObjectId
+    _id: ObjectId | string
+}
+
+export interface Watchlist {
+    _id: ObjectId,
+    ownerEmail: string,
+    name: string,
+    symbols: string[]
 }
 
 declare module "next-auth" {

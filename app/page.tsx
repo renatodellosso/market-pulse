@@ -25,5 +25,8 @@ export default async function Home() {
         <SignIn />
     </div>;
 
-  return <Dashboard watchlists={user?.watchlists} reports={user?.reports} />
+  const watchlists = user?.watchlists.map(w => ({ _id: w._id.toString(), name: w.name }));
+  const reports = user?.reports.map(r => ({ _id: r._id.toString(), name: r.name }));
+
+  return <Dashboard watchlists={watchlists} reports={reports} />
 }

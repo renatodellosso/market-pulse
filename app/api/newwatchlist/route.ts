@@ -1,28 +1,24 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import next, { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
 import { getUser, newWatchlist } from "@/lib/db/users";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "next-auth/react";
 
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
-    console.log("GET /api/newwatchlist");
-    console.log(res);
-    const session = await getServerSession(req, res, authOptions);
+export async function GET(req: NextApiRequest) {
+    const session = await getServerSession(authOptions);
 
-    console.log(session);
+    if(!session)
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    // if(!session)
-    //     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    console.log("Creating new watchlist...");
 
-    // console.log("Creating new watchlist...");
+    const watchlistId = await newWatchlist(session.user.email!);
 
-    // const watchlistId = await newWatchlist(session.user.id);
+    if(!watchlistId)
+        return NextResponse.json({ error: "Failed to create watchlist" }, { status: 500 });
 
-    // if(!watchlistId)
-    //     return NextResponse.json({ error: "Failed to create watchlist" }, { status: 500 });
+    console.log("New watchlist created");
 
-    // console.log("New watchlist created");
-    // return NextResponse.redirect(`/watchlist/${watchlistId}`);
+    return NextResponse.json({ id: watchlistId });
 }

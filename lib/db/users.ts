@@ -1,6 +1,7 @@
 import { User } from "next-auth";
 import { getUsers } from "./db";
 import { ObjectId, WithId } from "mongodb";
+import { createNewWatchlist } from "./watchlists";
 
 export async function getUser(id: string): Promise<WithId<User> | null> {
     let users = await getUsers();
@@ -25,20 +26,24 @@ export async function initUser(user: User) {
     });
 }
 
-export async function newWatchlist(userId: string): Promise<ObjectId | null> {
+export async function newWatchlist(userEmail: string): Promise<ObjectId | null> {
     let users = await getUsers();
 
-    let result = await users.updateOne({ _id: ObjectId.createFromHexString(userId) }, {
+    const newId = await createNewWatchlist(userEmail);
+
+    if(!newId) return null;
+
+    const result = await users.updateOne({ email: userEmail }, {
         $push: {
             watchlists: {
                 $each: [{
                     name: "New Watchlist",
-                    _id: new ObjectId()
+                    _id: newId!
                 }],
                 $position: 0
             }
         }
     });
 
-    return result.modifiedCount > 0 ? result.upsertedId : null;
+    return newId;
 }

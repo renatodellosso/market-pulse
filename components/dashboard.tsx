@@ -5,10 +5,14 @@ import { getUser, getUserByEmail } from "@/lib/db/users";
 import { NamedId } from "@/lib/types";
 import { get } from "http";
 import { Session, getServerSession } from "next-auth";
+import Link from "next/link";
 
-function newWatchlist() {
+async function newWatchlist() {
   console.log("Creating new watchlist...");
-  get('/api/newwatchlist');
+  const req = await fetch('/api/newwatchlist');
+
+  const res = await req.json();
+  window.location.href = `/watchlist/${res.id}`;
 }
 
 function newReport() {
@@ -25,6 +29,13 @@ export default async function Dashboard(props: { watchlists: NamedId[], reports:
           <h1 className='text-xl'>Watchlists</h1>
           { watchlists.length > 0 ? (
             <ul className='menu bg-neutral w-56 rounded-box'>
+              {
+                watchlists.map(w => 
+                  <Link key={w._id.toString()} href={`/watchlist/${w._id}`} className="link">
+                    <li className='menu-item'>{w.name}</li>
+                  </Link>
+                )
+              }
             </ul>
           ) : <></> }
           <button className='btn btn-primary' onClick={newWatchlist}>New Watchlist</button>
@@ -36,6 +47,14 @@ export default async function Dashboard(props: { watchlists: NamedId[], reports:
           <h1 className='text-xl'>Reports</h1>
           { reports.length > 0 ? (
             <ul className='menu bg-neutral w-56 rounded-box'>
+              {
+                reports.map(r => 
+                  <Link key={r._id.toString()} href={`/report/${r._id}`} className="link">
+                    <li className='menu-item'>{r.name}</li>
+                  </Link>
+                )
+              
+              }
             </ul>
           ) : <></> }
           <button className='btn btn-primary' onClick={newReport}>New Report</button>

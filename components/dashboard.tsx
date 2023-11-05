@@ -9,7 +9,7 @@ import Link from "next/link";
 
 async function newWatchlist() {
   console.log("Creating new watchlist...");
-  const req = await fetch('/api/newwatchlist');
+  const req = await fetch('/api/watchlist/new');
 
   const res = await req.json();
   window.location.href = `/watchlist/${res.id}`;

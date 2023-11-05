@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import Avatar from "./avatar";
 import SignIn from "./signin";
+import Link from "next/link";
 
 export default function NavBar() {
     const { data: session, status } = useSession();
@@ -14,5 +15,6 @@ export default function NavBar() {
         <Avatar src={session.user?.image ?? "https://cdn.britannica.com/73/103073-050-EB4992D4/Richard-M-Nixon-1969.jpg "} alt="Avatar" />
         <h1 className="text-lg">{session.user?.name?.split(" ")[0]}</h1>
         <SignIn />
+        <Link href="/" className="link">Dashboard</Link>
     </div>
 }

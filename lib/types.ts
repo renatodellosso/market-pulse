@@ -7,7 +7,7 @@ export interface NamedId {
 }
 
 export interface Watchlist {
-    _id: ObjectId,
+    _id: ObjectId | string,
     ownerEmail: string,
     name: string,
     symbols: string[]

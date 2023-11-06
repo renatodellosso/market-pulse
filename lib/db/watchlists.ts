@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import { getWatchlists } from "./db";
 import { Watchlist } from '../types';
+import { updateWatchlistName } from "./users";
 
 export async function createNewWatchlist(ownerEmail: string): Promise<ObjectId | string | null> {
     const watchlists = await getWatchlists();
@@ -21,10 +22,11 @@ export async function getWatchlist(id: string): Promise<Watchlist | null> {
     return watchlists.findOne({ _id: new ObjectId(id) });
 }
 
-export async function updateName(id: ObjectId, name: string) {
+export async function updateName(userEmail: string, id: ObjectId, name: string) {
     const watchlists = await getWatchlists();
 
     await watchlists.updateOne({ _id: id }, { $set: { name: name } });
+    updateWatchlistName(userEmail, id, name);
 }
 
 export async function updateSymbols(id: ObjectId, symbols: string[]) {

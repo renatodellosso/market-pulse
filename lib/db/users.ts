@@ -26,7 +26,7 @@ export async function initUser(user: User) {
     });
 }
 
-export async function newWatchlist(userEmail: string): Promise<ObjectId | null> {
+export async function newWatchlist(userEmail: string): Promise<ObjectId | string | null> {
     let users = await getUsers();
 
     const newId = await createNewWatchlist(userEmail);
@@ -46,4 +46,16 @@ export async function newWatchlist(userEmail: string): Promise<ObjectId | null> 
     });
 
     return newId;
+}
+
+export async function updateWatchlistName(userEmail: string, watchlistId: ObjectId, name: string) {
+    let users = await getUsers();
+
+    // Not entirely sure what this syntax is, but what I believe is happening is that it's finding the element with the matching ID,
+    // and then using its index to update that element.
+    await users.updateOne({ email: userEmail, "watchlists._id": watchlistId }, {
+        $set: {
+            "watchlists.$.name": name
+        }
+    });
 }

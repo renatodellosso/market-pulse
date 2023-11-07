@@ -13,6 +13,18 @@ export interface Watchlist {
     symbols: string[]
 }
 
+export enum ReportFrequency {
+    Daily, Weekly, Monthly
+}
+
+export interface Report {
+    _id: ObjectId | string,
+    ownerEmail: string,
+    name: string,
+    watchlist: ObjectId | string,
+    frequency: ReportFrequency
+}
+
 declare module "next-auth" {
     interface User extends DefaultUser {
         watchlists: NamedId[],

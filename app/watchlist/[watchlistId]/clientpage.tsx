@@ -12,7 +12,7 @@ async function onNameChanged(e: any, id: ObjectId | string) {
         if(e.target.value !== name) return;
 
         console.log(`Saving name: ${name}...`);
-        await fetch(`/api/watchlist/updateName?name=${name}&id=${id}`);
+        await fetch(`/api/watchlist/updatename?name=${name}&id=${id}`);
         console.log(`Saved name: ${name}`);
     }, 1000);
 }
@@ -35,7 +35,7 @@ async function updateWatchlist(e: any, id: string, symbols: string[] | null = nu
     console.log(symbols);
 
     if(e.target.value === "") {
-        await fetch(`/api/watchlist/updateSymbols?id=${id}&symbols=${JSON.stringify(symbols)}`);
+        await fetch(`/api/watchlist/updatesymbols?id=${id}&symbols=${JSON.stringify(symbols)}`);
         window.location.reload();
     }
     else {
@@ -46,7 +46,7 @@ async function updateWatchlist(e: any, id: string, symbols: string[] | null = nu
             if(e.target.value !== symbol) return;
 
             console.log(`Saving symbols: ${symbols}...`);
-            await fetch(`/api/watchlist/updateSymbols?id=${id}&symbols=${JSON.stringify(symbols)}`);
+            await fetch(`/api/watchlist/updatesymbols?id=${id}&symbols=${JSON.stringify(symbols)}`);
             console.log(`Saved symbols: ${symbols}`);
             window.location.reload();
         }, 1000);
@@ -65,12 +65,22 @@ async function addSymbol(e: any, id: string) {
     updateWatchlist(e, id, symbols);
 }
 
+async function deleteWatchlist(e: any, id: string) {
+    // x && y() means only do y if x is true
+
+    // Confirm the user wants to delete the watchlist
+    if(confirm("Are you sure you want to delete this watchlist?") === false) return;
+    await fetch(`/api/watchlist/delete?id=${id}`);
+    window.location.href = "/";
+}
+
 export default function ClientPage(props: { watchlist: Watchlist }) {
     const { watchlist } = props;
 
     return <div id="main" className='flex-1 flex items-center justify-center flex-col space-y-2'>
             <input type="text" placeholder="Unnamed Watchlist" defaultValue={watchlist.name} onChange={(e)=>onNameChanged(e, watchlist._id)} 
                 className="input input-bordered w-full text-primary" />
+            <button className="btn btn-error" onClick={(e)=>deleteWatchlist(e, watchlist._id.toString())}>Delete Watchlist</button>
             <span className="text-primary">Symbols:</span>
             <div id="symbols">
                 {

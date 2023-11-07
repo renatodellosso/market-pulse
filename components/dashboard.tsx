@@ -15,8 +15,12 @@ async function newWatchlist() {
   window.location.href = `/watchlist/${res.id}`;
 }
 
-function newReport() {
+async function newReport() {
   console.log("Creating new report...");
+  const req = await fetch('/api/report/new');
+
+  const res = await req.json();
+  window.location.href = `/report/${res.id}`;
 }
 
 export default async function Dashboard(props: { watchlists: NamedId[], reports: NamedId[] }) {

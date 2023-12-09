@@ -3,6 +3,7 @@ import { getUsers } from "./db";
 import { ObjectId, WithId } from "mongodb";
 import { createNewWatchlist } from "./watchlists";
 import { createNewReport } from "./reports";
+import { NamedId } from "../types";
 
 export async function getUser(id: string): Promise<WithId<User> | null> {
     let users = await getUsers();
@@ -73,7 +74,7 @@ export async function removeWatchlist(userEmail: string, watchlistId: ObjectId) 
     });
 }
 
-export async function newReport(userEmail: string, watchlistId: ObjectId): Promise<ObjectId | string | null> {
+export async function newReport(userEmail: string, watchlistId: NamedId): Promise<ObjectId | string | null> {
     let users = await getUsers();
 
     const newId = await createNewReport(userEmail, watchlistId);

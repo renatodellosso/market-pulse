@@ -8,6 +8,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { getReport } from "@/lib/db/reports";
+import { getUser, getUserByEmail } from "@/lib/db/users";
 
 // Fetch data at request time, then pass to a client component, thus avoiding having to write an API route
 export default async function Page({ params }: { params: { reportId: string } }) {
@@ -25,7 +26,14 @@ export default async function Page({ params }: { params: { reportId: string } })
     if(!session) redirect("/api/auth/signin");
     if(report.ownerEmail !== session.user?.email) return <div>Not authorized</div>
 
-    report.watchlist = report.watchlist.toString();
+    report.watchlist._id = report.watchlist?._id?.toString() ?? "Null";
 
-    return <ClientPage report={report} />
+    const user = await getUserByEmail(session.user?.email);
+    const watchlists = user!.watchlists;
+
+    watchlists.forEach(element => {
+        element._id = element._id.toString();
+    });
+
+    return <ClientPage report={report} watchlists={watchlists} />
 }

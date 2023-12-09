@@ -1,9 +1,9 @@
 import { ObjectId, WithId } from "mongodb";
 import { getReports } from "./db";
-import { Report, ReportFrequency, Watchlist } from '../types';
+import { NamedId, Report, ReportFrequency, Watchlist } from '../types';
 import { removeReport, removeWatchlist, updateReportName, updateWatchlistName } from "./users";
 
-export async function createNewReport(ownerEmail: string, watchlist: ObjectId): Promise<ObjectId | string | null> {
+export async function createNewReport(ownerEmail: string, watchlist: NamedId): Promise<ObjectId | string | null> {
     const reports = await getReports();
 
     const inserted = await reports.insertOne({
@@ -11,7 +11,8 @@ export async function createNewReport(ownerEmail: string, watchlist: ObjectId): 
         ownerEmail: ownerEmail,
         name: "New Report",
         watchlist: watchlist,
-        frequency: ReportFrequency.Daily
+        frequency: ReportFrequency.DAILY,
+        data: []
     });
 
     return inserted.insertedId;
@@ -35,4 +36,22 @@ export async function deleteReport(userEmail: string, id: ObjectId) {
 
     await reports.deleteOne({ _id: id });
     removeReport(userEmail, id);
+}
+
+export async function setWatchlist(id: ObjectId, watchlist: NamedId) {
+    const reports = await getReports();
+
+    await reports.updateOne({ _id: id }, { $set: { watchlist: { _id: watchlist._id, name: watchlist.name } } });
+}
+
+export async function setFrequency(id: ObjectId, frequency: string) {
+    const reports = await getReports();
+
+    await reports.updateOne({ _id: id }, { $set: { frequency: frequency } });
+}
+
+export async function setData(id: ObjectId, data: string[]) {
+    const reports = await getReports();
+
+    await reports.updateOne({ _id: id }, { $set: { data: data } });
 }

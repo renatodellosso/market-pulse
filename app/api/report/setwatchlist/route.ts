@@ -1,12 +1,10 @@
-import next, { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
-import { getUser, newWatchlist } from "@/lib/db/users";
-import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "next-auth/react";
-import { deleteWatchlist, getWatchlist, updateName, updateSymbols } from "@/lib/db/watchlists";
 import { ObjectId } from "mongodb";
-import { deleteReport, getReport } from "@/lib/db/reports";
+import { getReport, setWatchlist, updateName } from "@/lib/db/reports";
+import { NextResponse } from "next/server";
+import { getWatchlist } from "@/lib/db/watchlists";
 
 export async function GET(req: NextApiRequest) {
     const session = await getServerSession(authOptions);
@@ -17,19 +15,26 @@ export async function GET(req: NextApiRequest) {
     // Read query params
     const params = new URL(req.url!).searchParams;
     let id: ObjectId | string = params.get("id")!;
+    const watchlistId = params.get("watchlist");
+
+    console.log("Setting report watchlist... Watchlist: " + watchlistId);
 
     const report = await getReport(id);
 
-    // Make sure to verify report exists and user has permissions!
     if(!report)
         return NextResponse.json({ error: "Report not found" }, { status: 404 });
     if(report.ownerEmail != session.user.email)
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    console.log("Deleting report", id);
+    const watchlist = await getWatchlist(watchlistId!);
+    if(!watchlist)
+        return NextResponse.json({ error: "Watchlist not found" }, { status: 404 });
+    if(watchlist.ownerEmail != session.user.email)
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     id = new ObjectId(id!);
-    await deleteReport(session.user.email, id as ObjectId);
+
+    await setWatchlist(session.user.email!, id, { _id: watchlist._id, name: watchlist.name });
 
     return NextResponse.json({ id: id });
 }

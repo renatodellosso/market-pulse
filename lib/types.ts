@@ -13,16 +13,27 @@ export interface Watchlist {
     symbols: string[]
 }
 
-export enum ReportFrequency {
-    Daily, Weekly, Monthly
+export class ReportFrequency {
+    static readonly DAILY = "Daily";
+    static readonly WEEKLY = "Weekly";
+    static readonly MONTHLY = "Monthly";
+    static readonly frequencies = [ReportFrequency.DAILY, ReportFrequency.WEEKLY, ReportFrequency.MONTHLY];
+}
+
+export class ReportData {
+    static readonly DAILY_CHANGE = "1D % Change";
+    static readonly WEEKLY_CHANGE = "5D % Change";
+
+    static readonly data = [ReportData.DAILY_CHANGE, ReportData.WEEKLY_CHANGE];
 }
 
 export interface Report {
     _id: ObjectId | string,
     ownerEmail: string,
     name: string,
-    watchlist: ObjectId | string,
-    frequency: ReportFrequency
+    watchlist: NamedId,
+    frequency: string,
+    data: string[]
 }
 
 declare module "next-auth" {

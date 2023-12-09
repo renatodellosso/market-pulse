@@ -1,12 +1,11 @@
-import next, { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
-import { getUser, newWatchlist } from "@/lib/db/users";
-import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "next-auth/react";
-import { deleteWatchlist, getWatchlist, updateName, updateSymbols } from "@/lib/db/watchlists";
 import { ObjectId } from "mongodb";
-import { deleteReport, getReport } from "@/lib/db/reports";
+import { getReport, setFrequency, setWatchlist, updateName } from "@/lib/db/reports";
+import { NextResponse } from "next/server";
+import { getWatchlist } from "@/lib/db/watchlists";
+import { ReportFrequency } from "@/lib/types";
 
 export async function GET(req: NextApiRequest) {
     const session = await getServerSession(authOptions);
@@ -17,19 +16,23 @@ export async function GET(req: NextApiRequest) {
     // Read query params
     const params = new URL(req.url!).searchParams;
     let id: ObjectId | string = params.get("id")!;
+    const frequency = params.get("frequency");
+
+    console.log("Setting report frequency... Frequency: " + frequency);
 
     const report = await getReport(id);
 
-    // Make sure to verify report exists and user has permissions!
     if(!report)
         return NextResponse.json({ error: "Report not found" }, { status: 404 });
     if(report.ownerEmail != session.user.email)
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    console.log("Deleting report", id);
-
     id = new ObjectId(id!);
-    await deleteReport(session.user.email, id as ObjectId);
+
+    if(!frequency || !ReportFrequency.frequencies.includes(frequency))
+        return NextResponse.json({ error: "Invalid frequency" }, { status: 400 });
+
+    await setFrequency(id, frequency ?? ReportFrequency.DAILY);
 
     return NextResponse.json({ id: id });
 }

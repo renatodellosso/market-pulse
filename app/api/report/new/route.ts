@@ -20,18 +20,21 @@ export async function GET(req: NextApiRequest) {
     if(!user)
         return NextResponse.json({ error: "Failed to find user" }, { status: 500 });
 
-    let watchlistId = user.watchlists.length > 0 ? user.watchlists[0]._id as ObjectId : null;
+    let watchlist = user.watchlists.length > 0 ? user.watchlists[0] : null;
  
     // If the user doesn't have any watchlists, create a new one
     if(user.watchlists.length == 0) {
         console.log("Creating new watchlist...");
-        watchlistId = await newWatchlist(session.user.email!) as ObjectId;
+        watchlist = {
+            _id: await newWatchlist(session.user.email!) as ObjectId,
+            name: "New Watchlist",
+        };
     }
 
-    if(!watchlistId)
+    if(!watchlist)
         return NextResponse.json({ error: "Failed to find or create a watchlist" }, { status: 500 });
 
-    const reportId = await newReport(session.user.email!, watchlistId);
+    const reportId = await newReport(session.user.email!, watchlist);
 
     if(!reportId)
         return NextResponse.json({ error: "Failed to create report" }, { status: 500 });

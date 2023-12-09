@@ -27,8 +27,13 @@ export class ReportFrequency {
 export class ReportData {
   static readonly DAILY_CHANGE = "1D % Change";
   static readonly WEEKLY_CHANGE = "5D % Change";
+  static readonly MONTHLY_CHANGE = "1M % Change";
 
-  static readonly data = [ReportData.DAILY_CHANGE, ReportData.WEEKLY_CHANGE];
+  static readonly data = [
+    ReportData.DAILY_CHANGE,
+    ReportData.WEEKLY_CHANGE,
+    ReportData.MONTHLY_CHANGE,
+  ];
 }
 
 export interface Report {
@@ -47,6 +52,7 @@ export class StockData {
 
   dailyChange: number | undefined;
   weeklyChange: number | undefined;
+  monthlyChange: number | undefined;
 
   constructor(symbol: string) {
     this.symbol = symbol;

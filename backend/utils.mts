@@ -5,5 +5,5 @@ export function formatPercentChange(change: number): string {
   if (change > 0) color = "green";
   else if (change < 0) color = "red";
 
-  return `<style color="${color}">${text}</style>`;
+  return `<span style="color:${color}">${text}</span>`;
 }

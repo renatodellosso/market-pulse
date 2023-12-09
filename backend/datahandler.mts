@@ -1,5 +1,5 @@
 import { ReportData, StockData } from "@/lib/types";
-import { dailyChange, weeklyChange } from "./polygon.mts";
+import { dailyChange, monthlyChange, weeklyChange } from "./polygon.mts";
 
 let stocks: Map<string, StockData>;
 
@@ -50,6 +50,9 @@ async function fetchStockData(symbol: string) {
         break;
       case ReportData.WEEKLY_CHANGE:
         stock.weeklyChange = await weeklyChange(symbol);
+        break;
+      case ReportData.MONTHLY_CHANGE:
+        stock.monthlyChange = await monthlyChange(symbol);
         break;
     }
   }

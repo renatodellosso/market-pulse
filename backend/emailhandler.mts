@@ -31,6 +31,7 @@ async function sendEmail(email: Email) {
   const stocks = [];
   for (const symbol of email.symbols) {
     const stock = getStockData(symbol);
+    // console.log(stock);
     if (stock) {
       stocks.push(stock);
     }
@@ -40,13 +41,21 @@ async function sendEmail(email: Email) {
 
   for (const stock of stocks) {
     text += `${stock.symbol}`;
+
     for (const data of email.data) {
       switch (data) {
         case "1D % Change":
           text += ` - ${formatPercentChange(stock.dailyChange!)}`;
           break;
         case "5D % Change":
-          text += `<br> - 5D Change: ${formatPercentChange(stock.weeklyChange!)}`;
+          text += `<br> - 5D Change: ${formatPercentChange(
+            stock.weeklyChange!
+          )}`;
+          break;
+        case "1M % Change":
+          text += `<br> - 1M Change: ${formatPercentChange(
+            stock.monthlyChange!
+          )}`;
           break;
       }
     }

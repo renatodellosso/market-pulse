@@ -15,7 +15,7 @@ console.log("Starting backend...");
 loadEnv();
 
 async function sendUpdates(frequencies: string[]) {
-  console.log("Sending updates...");
+  console.log("Sending updates... Frquencies: " + frequencies.join(", "));
 
   clearFetchQueue();
 
@@ -29,7 +29,7 @@ async function sendUpdates(frequencies: string[]) {
   }
 
   const emails: Email[] = [];
-  reports.forEach(async (report) => {
+  const promises = reports.map(async (report) => {
     console.log("Found reports.");
 
     console.log(`Processing report ${report.name}...`);
@@ -48,13 +48,12 @@ async function sendUpdates(frequencies: string[]) {
 
     console.log(`Finished processing report ${report.name}.`);
   });
+  await Promise.all(promises);
 
   console.log("Finished processing reports.");
 
-  processFetchQueue();
-  sendEmails(emails).then(() => {
-    console.log("Finished sending emails.");
-  });
+  await processFetchQueue();
+  sendEmails(emails);
 }
 
 async function main() {
@@ -62,9 +61,21 @@ async function main() {
     try {
       let date = new Date();
 
-      // Wait until 6:30 PM
-      while (date.getHours() < 18 || date.getMinutes() < 30) {
+      // await sendUpdates([ReportFrequency.DAILY, ReportFrequency.WEEKLY]);
+
+      // Wait until 6 PM
+      while (date.getHours() < 18 || date.getHours() > 18) {
         date = new Date();
+        console.log("Waiting another hour... Current Time: " + date.toString());
+        await new Promise((resolve) => setTimeout(resolve, 60 * 60 * 1000));
+      }
+
+      // Wait until 6:30 PM
+      while (date.getMinutes() < 30) {
+        date = new Date();
+        console.log(
+          "Waiting another 15 minutes... Current Time: " + date.toString()
+        );
         await new Promise((resolve) => setTimeout(resolve, 15 * 60 * 1000));
       }
 
@@ -81,6 +92,9 @@ async function main() {
       if (date.getMonth() !== month) frequencies.push(ReportFrequency.MONTHLY);
 
       await sendUpdates(frequencies);
+
+      // Wait an hour before checking again
+      await new Promise((resolve) => setTimeout(resolve, 60 * 60 * 1000));
     } catch (e) {
       console.log(e);
     }

@@ -9,11 +9,11 @@ import {
   setWatchlist,
   updateName,
 } from "@/lib/db/reports";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getWatchlist } from "@/lib/db/watchlists";
 import { ReportData, ReportFrequency } from "@/lib/types";
 
-export async function GET(req: NextApiRequest) {
+export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
 
   if (!session)

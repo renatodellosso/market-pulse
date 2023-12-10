@@ -7,29 +7,29 @@ import { getSession } from "next-auth/react";
 import { getWatchlist, updateName } from "@/lib/db/watchlists";
 import { ObjectId } from "mongodb";
 
-export async function GET(req: NextApiRequest) {
-    const session = await getServerSession(authOptions);
+export async function GET(req: NextRequest) {
+  const session = await getServerSession(authOptions);
 
-    if(!session)
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    
-    // Read query params
-    const params = new URL(req.url!).searchParams;
-    let id: ObjectId | string = params.get("id")!;
-    const name = params.get("name");
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    console.log("Updating watchlist name: " + name);
+  // Read query params
+  const params = new URL(req.url!).searchParams;
+  let id: ObjectId | string = params.get("id")!;
+  const name = params.get("name");
 
-    const watchlist = await getWatchlist(id);
+  console.log("Updating watchlist name: " + name);
 
-    if(!watchlist)
-        return NextResponse.json({ error: "Watchlist not found" }, { status: 404 });
-    if(watchlist.ownerEmail != session.user.email)
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const watchlist = await getWatchlist(id);
 
-    id = new ObjectId(id!);
+  if (!watchlist)
+    return NextResponse.json({ error: "Watchlist not found" }, { status: 404 });
+  if (watchlist.ownerEmail != session.user.email)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    updateName(session.user.email, id, name!);
+  id = new ObjectId(id!);
 
-    return NextResponse.json({ id: id, name: name });
+  updateName(session.user.email, id, name!);
+
+  return NextResponse.json({ id: id, name: name });
 }

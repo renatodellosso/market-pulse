@@ -105,10 +105,10 @@ export default function ClientPage(props: {
   async function unselectData(datapoint: string) {
     console.log("Unselecting data:", datapoint);
 
-    const data = report.data.filter((d) => d !== datapoint);
-    setData(data);
+    const newData = data.filter((d) => d !== datapoint);
+    setData(newData);
 
-    updateData(data);
+    updateData(newData);
   }
 
   function watchlistDropdown() {

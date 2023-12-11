@@ -1,5 +1,5 @@
 import { ReportData, StockData } from "@/lib/types";
-import { dailyChange, monthlyChange, weeklyChange } from "./polygon.mts";
+import { dailyChange, monthlyChange, weeklyChange } from "./apihandler.mts";
 
 let stocks: Map<string, StockData>;
 

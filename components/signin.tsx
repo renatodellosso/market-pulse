@@ -10,8 +10,8 @@ export default function SignIn() {
       Sign Out
     </button>
   ) : (
-    <button className="btn btn-primary" onClick={() => signIn()}>
-      Sign In
+    <button className="btn btn-primary" onClick={() => signIn("google")}>
+      Sign In with Google
     </button>
   );
 }

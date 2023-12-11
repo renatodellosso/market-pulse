@@ -9,6 +9,8 @@ import {
 } from "./datahandler.mts";
 import { sendEmails } from "./emailhandler.mjs";
 import { exit } from "process";
+import yahooFinance from "yahoo-finance2";
+import { dailyChange, monthlyChange, weeklyChange } from "./apihandler.mts";
 
 console.log("Starting backend...");
 

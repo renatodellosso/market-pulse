@@ -37,10 +37,10 @@ async function sendEmail(email: Email) {
     }
   }
 
-  let text = `<b>${email.name}</b><br>`;
+  let text = `<b>${email.name}</b>`;
 
   for (const stock of stocks) {
-    text += `${stock.symbol}`;
+    text += `<br>${stock.symbol}`;
 
     for (const data of email.data) {
       switch (data) {

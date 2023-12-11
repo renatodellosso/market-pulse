@@ -103,5 +103,4 @@ async function main() {
   }
 }
 
-// main();
-console.log(new Date().getHours());
+main();

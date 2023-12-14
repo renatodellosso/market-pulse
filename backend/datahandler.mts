@@ -1,5 +1,10 @@
 import { ReportData, StockData } from "@/lib/types";
-import { dailyChange, monthlyChange, weeklyChange } from "./apihandler.mts";
+import {
+  calendarEvents,
+  dailyChange,
+  monthlyChange,
+  weeklyChange,
+} from "./apihandler.mts";
 
 let stocks: Map<string, StockData>;
 
@@ -53,6 +58,9 @@ async function fetchStockData(symbol: string) {
         break;
       case ReportData.MONTHLY_CHANGE:
         stock.monthlyChange = await monthlyChange(symbol);
+        break;
+      case ReportData.EVENTS:
+        stock.events = await calendarEvents(symbol);
         break;
     }
   }

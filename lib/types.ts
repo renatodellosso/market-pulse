@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { type DefaultUser, type DefaultSession } from "next-auth";
+import { exit } from "process";
 
 export interface NamedId {
   name: string;
@@ -28,11 +29,13 @@ export class ReportData {
   static readonly DAILY_CHANGE = "1D % Change";
   static readonly WEEKLY_CHANGE = "5D % Change";
   static readonly MONTHLY_CHANGE = "1M % Change";
+  static readonly EVENTS = "Events";
 
   static readonly data = [
     ReportData.DAILY_CHANGE,
     ReportData.WEEKLY_CHANGE,
     ReportData.MONTHLY_CHANGE,
+    ReportData.EVENTS,
   ];
 }
 
@@ -54,8 +57,20 @@ export class StockData {
   weeklyChange: number | undefined;
   monthlyChange: number | undefined;
 
+  events: CalendarEvent[] | undefined;
+
   constructor(symbol: string) {
     this.symbol = symbol;
+  }
+}
+
+export class CalendarEvent {
+  name: string;
+  date: Date;
+
+  constructor(name: string, date: Date) {
+    this.name = name;
+    this.date = date;
   }
 }
 

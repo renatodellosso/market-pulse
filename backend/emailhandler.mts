@@ -1,4 +1,4 @@
-import { Email } from "@/lib/types";
+import { Email, ReportData } from "@/lib/types";
 import { getStockData } from "./datahandler.mts";
 import { Transporter, createTransport } from "nodemailer";
 import { formatPercentChange } from "./utils.mts";
@@ -37,29 +37,57 @@ async function sendEmail(email: Email) {
     }
   }
 
-  let text = `<b>${email.name}</b>`;
+  let text = `<h3>${email.name}</h3>`;
 
   for (const stock of stocks) {
-    text += `<br>${stock.symbol}`;
+    const change =
+      stock.dailyChange ?? stock.weeklyChange ?? stock.monthlyChange ?? 0;
 
+    let color = "black";
+    if (change > 0) color = "green";
+    else if (change < 0) color = "red";
+
+    text += `<a href="https://finance.yahoo.com/quote/${stock.symbol}" style="color:${color}">${stock.symbol}</a>`;
+
+    if (email.data.includes(ReportData.DAILY_CHANGE))
+      text += ` - ${formatPercentChange(stock.dailyChange!)}`;
+
+    text += "<ul>";
     for (const data of email.data) {
+      if (data == ReportData.DAILY_CHANGE) continue;
+
+      if (data == ReportData.EVENTS && !stock.events) continue;
+      text += "<li>";
+
       switch (data) {
-        case "1D % Change":
-          text += ` - ${formatPercentChange(stock.dailyChange!)}`;
+        case ReportData.WEEKLY_CHANGE:
+          text += `5D Change: ${formatPercentChange(stock.weeklyChange!)}`;
           break;
-        case "5D % Change":
-          text += `<br> - 5D Change: ${formatPercentChange(
-            stock.weeklyChange!
-          )}`;
+        case ReportData.MONTHLY_CHANGE:
+          text += `1M Change: ${formatPercentChange(stock.monthlyChange!)}`;
           break;
-        case "1M % Change":
-          text += `<br> - 1M Change: ${formatPercentChange(
-            stock.monthlyChange!
-          )}`;
+        case ReportData.EVENTS:
+          const events = stock.events;
+
+          text += "Events:<ul>";
+          for (const event of events!) {
+            const timeDiff = event.date.getTime() - new Date().getTime();
+            const daysDiff = timeDiff / (1000 * 3600 * 24);
+            text += `<li>${event.name}: in ${Math.round(daysDiff)} days.</li>`;
+          }
+          text += "</ul>";
+
           break;
       }
+
+      text += "</li>";
     }
+
+    text += "</ul>";
   }
+  text += "</ul>";
+
+  console.log(text);
 
   await transporter.sendMail({
     from: `"Market Pulse" <${process.env.EMAIL_USERNAME}>`,

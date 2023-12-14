@@ -1,3 +1,4 @@
+import { CalendarEvent } from "@/lib/types";
 import yahooFinance from "yahoo-finance2";
 
 export async function dailyChange(symbol: string): Promise<number> {
@@ -44,4 +45,40 @@ export async function weeklyChange(symbol: string): Promise<number> {
 
 export async function monthlyChange(symbol: string): Promise<number> {
   return changeOverTime(symbol, 30, false, true);
+}
+
+export async function calendarEvents(
+  symbol: string
+): Promise<CalendarEvent[] | undefined> {
+  let data;
+  try {
+    data = await yahooFinance.quoteSummary(symbol, {
+      modules: ["calendarEvents"],
+    });
+  } catch (e: any) {
+    console.log("Error fetching calendar events: " + e.message);
+    return undefined;
+  }
+
+  const events: CalendarEvent[] = [];
+
+  const earnings = data.calendarEvents?.earnings;
+  if (earnings?.earningsDate) {
+    events.push(new CalendarEvent("Earnings", earnings.earningsDate[0]));
+  }
+
+  // Ex Dividend Date is the last day to buy a stock to receive the dividend.
+  const exDividends = data.calendarEvents?.exDividendDate;
+  if (exDividends) {
+    events.push(
+      new CalendarEvent("Last Purchase Date to Receive Dividends", exDividends)
+    );
+  }
+
+  const dividends = data.calendarEvents?.dividendDate;
+  if (dividends) {
+    events.push(new CalendarEvent("Dividend Date", dividends));
+  }
+
+  return events;
 }

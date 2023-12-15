@@ -83,8 +83,14 @@ export default function ClientPage(props: {
   async function updateData(data: string[]) {
     console.log("Setting data:", data);
 
+    const newData = [];
+    for (const d of data) {
+      // Replace & with %26, since we can't have & in the URL
+      if (ReportData.data.includes(d)) newData.push(d.replace("&", "%26"));
+    }
+
     const promise = fetch(
-      `/api/report/setdata?id=${report._id}&data=${data.join(",")}`
+      `/api/report/setdata?id=${report._id}&data=${newData.join(",")}`
     );
     toast.promise(promise, {
       loading: "Setting data...",

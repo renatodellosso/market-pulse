@@ -47,6 +47,25 @@ export async function monthlyChange(symbol: string): Promise<number> {
   return changeOverTime(symbol, 30, false, true);
 }
 
+export async function yearlyChange(symbol: string): Promise<number> {
+  return changeOverTime(symbol, 365, false, true);
+}
+
+export async function ytdChange(symbol: string): Promise<number> {
+  const date = new Date();
+
+  // Take today, subtract Jan 1, then divide by milliseconds in a day.
+  const days =
+    (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) -
+      Date.UTC(date.getFullYear(), 0, 0)) /
+    24 /
+    60 /
+    60 /
+    1000;
+
+  return changeOverTime(symbol, days, false, true);
+}
+
 export async function calendarEvents(
   symbol: string
 ): Promise<CalendarEvent[] | undefined> {
@@ -71,13 +90,16 @@ export async function calendarEvents(
   const exDividends = data.calendarEvents?.exDividendDate;
   if (exDividends) {
     events.push(
-      new CalendarEvent("Last Purchase Date to Receive Dividends", exDividends)
+      new CalendarEvent(
+        "Previous Last Purchase Date to Receive Dividends",
+        exDividends
+      )
     );
   }
 
   const dividends = data.calendarEvents?.dividendDate;
   if (dividends) {
-    events.push(new CalendarEvent("Dividend Date", dividends));
+    events.push(new CalendarEvent("Previous Dividend Date", dividends));
   }
 
   return events;

@@ -39,7 +39,19 @@ async function sendEmail(email: Email) {
 
   let text = `<h3>${email.name}</h3>`;
 
+  let gspc = undefined;
+  if (
+    email.data.includes(ReportData.DAILY_VS_GSPC) ||
+    email.data.includes(ReportData.WEEKLY_VS_GSPC) ||
+    email.data.includes(ReportData.MONTHLY_VS_GSPC)
+  ) {
+    gspc = getStockData("^GSPC");
+  }
+
+  console.log(gspc);
+
   for (const stock of stocks) {
+    console.log(stock);
     const change =
       stock.dailyChange ?? stock.weeklyChange ?? stock.monthlyChange ?? 0;
 
@@ -66,17 +78,55 @@ async function sendEmail(email: Email) {
         case ReportData.MONTHLY_CHANGE:
           text += `1M Change: ${formatPercentChange(stock.monthlyChange!)}`;
           break;
+        case ReportData.YEARLY_CHANGE:
+          text += `1Y Change: ${formatPercentChange(stock.yearlyChange!)}`;
+          break;
+        case ReportData.YTD_CHANGE:
+          text += `YTD Change: ${formatPercentChange(stock.ytdChange!)}`;
+          break;
         case ReportData.EVENTS:
           const events = stock.events;
 
           text += "Events:<ul>";
           for (const event of events!) {
+            if (event.name.includes("Dividend")) {
+              text += `<li>${
+                event.name
+              }: ${event.date.toLocaleDateString()}</li>`;
+              continue;
+            }
+
             const timeDiff = event.date.getTime() - new Date().getTime();
             const daysDiff = timeDiff / (1000 * 3600 * 24);
-            text += `<li>${event.name}: in ${Math.round(daysDiff)} days.</li>`;
+            text += `<li>${event.name} in: ${Math.round(daysDiff)} days.</li>`;
           }
           text += "</ul>";
 
+          break;
+        case ReportData.DAILY_VS_GSPC:
+          text += `1D vs GSPC: ${formatPercentChange(
+            stock.dailyChange! - gspc!.dailyChange!
+          )}`;
+          break;
+        case ReportData.WEEKLY_VS_GSPC:
+          text += `5D vs GSPC: ${formatPercentChange(
+            stock.weeklyChange! - gspc!.weeklyChange!
+          )}`;
+          break;
+        case ReportData.MONTHLY_VS_GSPC:
+          text += `1M vs GSPC: ${formatPercentChange(
+            stock.monthlyChange! - gspc!.monthlyChange!
+          )}`;
+          break;
+        case ReportData.YEARLY_VS_GSPC:
+          text += `1Y vs GSPC: ${formatPercentChange(
+            stock.yearlyChange! - gspc!.yearlyChange!
+          )}`;
+          break;
+        case ReportData.YTD_VS_GSPC:
+          text += `YTD vs GSPC: ${formatPercentChange(
+            stock.ytdChange! - gspc!.ytdChange!
+          )}`;
           break;
       }
 

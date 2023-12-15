@@ -4,6 +4,8 @@ import {
   dailyChange,
   monthlyChange,
   weeklyChange,
+  yearlyChange,
+  ytdChange,
 } from "./apihandler.mts";
 
 let stocks: Map<string, StockData>;
@@ -11,14 +13,42 @@ let stocks: Map<string, StockData>;
 export function addSymbolToFetchQueue(symbol: string, data: string[]) {
   console.log(`Adding ${symbol} to fetch queue...`);
 
+  const neededData = data.filter((d) => !d.includes("vs"));
+
+  // Ensure we collect change data if we are comparing to GSPC.
+  if (
+    data.includes(ReportData.DAILY_VS_GSPC) &&
+    !data.includes(ReportData.DAILY_CHANGE)
+  )
+    neededData.push(ReportData.DAILY_CHANGE);
+  if (
+    data.includes(ReportData.WEEKLY_VS_GSPC) &&
+    !data.includes(ReportData.WEEKLY_CHANGE)
+  )
+    neededData.push(ReportData.WEEKLY_CHANGE);
+  if (
+    data.includes(ReportData.MONTHLY_VS_GSPC) &&
+    !data.includes(ReportData.MONTHLY_CHANGE)
+  )
+    neededData.push(ReportData.MONTHLY_CHANGE);
+  if (
+    data.includes(ReportData.YEARLY_VS_GSPC) &&
+    !data.includes(ReportData.YEARLY_CHANGE)
+  )
+    neededData.push(ReportData.YEARLY_CHANGE);
+  if (
+    data.includes(ReportData.YTD_VS_GSPC) &&
+    !data.includes(ReportData.YTD_CHANGE)
+  )
+    neededData.push(ReportData.YTD_CHANGE);
+
   if (stocks.has(symbol)) {
     const stockData = stocks.get(symbol);
 
     stockData?.data.push(...data);
+    stockData?.neededData.push(...neededData);
   } else {
-    const stockData = new StockData(symbol);
-
-    stockData.data.push(...data);
+    const stockData = new StockData(symbol, data, neededData);
 
     stocks.set(symbol, stockData);
   }
@@ -29,6 +59,21 @@ export function clearFetchQueue() {
 }
 
 export async function processFetchQueue() {
+  stocks.set(
+    "^GSPC",
+    new StockData(
+      "^GSPC",
+      [],
+      [
+        ReportData.DAILY_CHANGE,
+        ReportData.WEEKLY_CHANGE,
+        ReportData.MONTHLY_CHANGE,
+        ReportData.YEARLY_CHANGE,
+        ReportData.YTD_CHANGE,
+      ]
+    )
+  );
+
   console.log("Processing fetch queue... Symbols to Fetch: " + stocks.size);
 
   const promises = Array.from(stocks.keys()).map(fetchStockData);
@@ -47,7 +92,7 @@ async function fetchStockData(symbol: string) {
 
   console.log(`Fetching ${symbol}... Data: ${stock?.data}`);
 
-  for (const data of stock?.data ?? []) {
+  for (const data of stock?.neededData ?? []) {
     console.log(`Fetching ${symbol} ${data}...`);
     switch (data) {
       case ReportData.DAILY_CHANGE:
@@ -58,6 +103,12 @@ async function fetchStockData(symbol: string) {
         break;
       case ReportData.MONTHLY_CHANGE:
         stock.monthlyChange = await monthlyChange(symbol);
+        break;
+      case ReportData.YEARLY_CHANGE:
+        stock.yearlyChange = await yearlyChange(symbol);
+        break;
+      case ReportData.YTD_CHANGE:
+        stock.ytdChange = await ytdChange(symbol);
         break;
       case ReportData.EVENTS:
         stock.events = await calendarEvents(symbol);

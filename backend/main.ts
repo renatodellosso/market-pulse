@@ -8,6 +8,7 @@ import {
   processFetchQueue,
 } from "./datahandler.mts";
 import { sendEmails } from "./emailhandler.mjs";
+import yahooFinance from "yahoo-finance2";
 
 console.log("Starting backend...");
 
@@ -60,6 +61,7 @@ async function main() {
     try {
       let date = new Date();
 
+      // Make sure to comment the next line out before deploying!
       // await sendUpdates([ReportFrequency.DAILY, ReportFrequency.WEEKLY]);
 
       // Wait until 6 PM EST

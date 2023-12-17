@@ -39,8 +39,13 @@ export async function GET(req: NextRequest) {
       if (!ReportData.data.includes(data))
         return NextResponse.json({ error: "Invalid data" }, { status: 400 });
       data = [data];
-    } else if (Array.isArray(data))
+    } else if (Array.isArray(data)) {
+      // Avoids issues with spaces in the URL
+      for (let i = 0; i < data.length; i++)
+        data[i] = data[i].replace("%20", "% ");
+
       data = data.filter((d) => ReportData.data.includes(d));
+    }
   } else data = [];
 
   id = new ObjectId(id!);

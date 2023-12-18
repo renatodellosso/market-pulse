@@ -65,7 +65,7 @@ async function main() {
       // await sendUpdates([ReportFrequency.DAILY, ReportFrequency.WEEKLY]);
 
       // Wait until 6 PM EST
-      while (date.getHours() < 22 || date.getHours() > 22) {
+      while (date.getHours() < 23 || date.getHours() > 23) {
         date = new Date();
         console.log("Waiting another hour... Current Time: " + date.toString());
         await new Promise((resolve) => setTimeout(resolve, 60 * 60 * 1000));

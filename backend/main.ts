@@ -62,7 +62,7 @@ async function main() {
       let date = new Date();
 
       // Make sure to comment the next line out before deploying!
-      // await sendUpdates([ReportFrequency.DAILY, ReportFrequency.WEEKLY]);
+      await sendUpdates([ReportFrequency.DAILY, ReportFrequency.WEEKLY]);
 
       // Wait until 6 PM EST
       while (date.getHours() < 22 || date.getHours() > 22) {

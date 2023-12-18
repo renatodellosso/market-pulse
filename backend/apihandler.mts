@@ -104,3 +104,64 @@ export async function calendarEvents(
 
   return events;
 }
+
+export async function dailyVolume(symbol: string): Promise<number> {
+  const data = await yahooFinance.quoteSummary(symbol);
+
+  return data.summaryDetail?.volume ?? 0;
+}
+
+export async function weeklyVolume(symbol: string): Promise<number> {
+  const data = await yahooFinance.chart(symbol, {
+    period1: new Date(new Date().setDate(new Date().getDate() - 5)),
+  });
+
+  let sum = 0;
+  for (const quote of data.quotes) {
+    sum += quote.volume ?? 0;
+  }
+
+  return sum / data.quotes.length;
+}
+
+export async function monthlyVolume(symbol: string): Promise<number> {
+  const data = await yahooFinance.chart(symbol, {
+    period1: new Date(new Date().setDate(new Date().getDate() - 30)),
+  });
+
+  let sum = 0;
+  for (const quote of data.quotes) {
+    sum += quote.volume ?? 0;
+  }
+
+  return sum / data.quotes.length;
+}
+
+// No clue over what time period this is.
+export async function avgVolume(symbol: string): Promise<number> {
+  const data = await yahooFinance.quoteSummary(symbol);
+
+  return data.summaryDetail?.averageVolume ?? 0;
+}
+
+export async function recommendations(symbol: string): Promise<string[]> {
+  const data = await yahooFinance.recommendationsBySymbol(symbol);
+
+  const recommendations: string[] = [];
+  for (const r of data.recommendedSymbols) recommendations.push(r.symbol);
+
+  return recommendations;
+}
+
+// Returns an array where 0 is intermediate term, 1 is short term, and 2 is long term.
+export async function outlook(symbol: string): Promise<(string | undefined)[]> {
+  const data = await yahooFinance.insights(symbol);
+
+  const outlook = [
+    data.instrumentInfo?.technicalEvents.intermediateTermOutlook.direction,
+    data.instrumentInfo?.technicalEvents.shortTermOutlook.direction,
+    data.instrumentInfo?.technicalEvents.longTermOutlook.direction,
+  ];
+
+  return outlook;
+}

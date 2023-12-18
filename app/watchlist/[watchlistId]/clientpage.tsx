@@ -36,7 +36,7 @@ export default function ClientPage(props: {
 
   function getSymbols() {
     // Select the div with the id "symbols", then select all input fields within it
-    const symbols = document.querySelectorAll("#symbols > div > input");
+    const symbols = document.querySelectorAll("#symbols > div > span > input");
 
     // Convert the NodeList to an array of strings
     return Array.from(symbols).map(
@@ -70,6 +70,9 @@ export default function ClientPage(props: {
       // Only save symbols if the user stops typing for 1 second
       setTimeout(async () => {
         if (e.target.value !== symbol) return;
+        console.log("Symbol:", symbol);
+        symbols = getSymbols();
+        console.log("Symbols:", symbols);
 
         setSymbols(symbols);
 
@@ -121,6 +124,7 @@ export default function ClientPage(props: {
     window.location.href = "/";
   }
 
+  // Make sure to update getSymbols if we edit the HTML!
   function symbolListElement() {
     return (
       <div id="symbols">

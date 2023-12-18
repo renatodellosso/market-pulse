@@ -1,16 +1,8 @@
-import { NextApiRequest } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { ObjectId } from "mongodb";
-import {
-  getReport,
-  setData,
-  setFrequency,
-  setWatchlist,
-  updateName,
-} from "@/lib/db/reports";
+import { getReport, setData } from "@/lib/db/reports";
 import { NextRequest, NextResponse } from "next/server";
-import { getWatchlist } from "@/lib/db/watchlists";
 import { ReportData, ReportFrequency } from "@/lib/types";
 
 export async function GET(req: NextRequest) {

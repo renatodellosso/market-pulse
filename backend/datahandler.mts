@@ -1,9 +1,15 @@
 import { ReportData, StockData } from "@/lib/types";
 import {
+  avgVolume,
   calendarEvents,
   dailyChange,
+  dailyVolume,
   monthlyChange,
+  monthlyVolume,
+  outlook,
+  recommendations,
   weeklyChange,
+  weeklyVolume,
   yearlyChange,
   ytdChange,
 } from "./apihandler.mts";
@@ -41,6 +47,8 @@ export function addSymbolToFetchQueue(symbol: string, data: string[]) {
     !data.includes(ReportData.YTD_CHANGE)
   )
     neededData.push(ReportData.YTD_CHANGE);
+  if (data.includes(ReportData.UNUSUAL_VOLUME))
+    neededData.push(ReportData.DAILY_VOLUME);
 
   if (stocks.has(symbol)) {
     const stockData = stocks.get(symbol);
@@ -112,6 +120,33 @@ async function fetchStockData(symbol: string) {
         break;
       case ReportData.EVENTS:
         stock.events = await calendarEvents(symbol);
+        break;
+      case ReportData.DAILY_VOLUME:
+        if (stock.avgVolume === undefined)
+          stock.avgVolume = await avgVolume(symbol);
+        stock.dailyVolume = await dailyVolume(symbol);
+        break;
+      case ReportData.WEEKLY_VOLUME:
+        if (stock.avgVolume === undefined)
+          stock.avgVolume = await avgVolume(symbol);
+        stock.weeklyVolume = await weeklyVolume(symbol);
+        break;
+      case ReportData.MONTHLY_VOLUME:
+        if (stock.avgVolume === undefined)
+          stock.avgVolume = await avgVolume(symbol);
+        stock.monthlyVolume = await monthlyVolume(symbol);
+        break;
+      case ReportData.RECOMMENDATIONS:
+        stock.recommendations = await recommendations(symbol);
+        break;
+      case ReportData.IMMEDIATE_TERM_OUTLOOK:
+        stock.immediateTermOutlook = (await outlook(symbol))[0];
+        break;
+      case ReportData.SHORT_TERM_OUTLOOK:
+        stock.shortTermOutlook = (await outlook(symbol))[1];
+        break;
+      case ReportData.LONG_TERM_OUTLOOK:
+        stock.longTermOutlook = (await outlook(symbol))[2];
         break;
     }
   }

@@ -37,6 +37,14 @@ export class ReportData {
   static readonly MONTHLY_VS_GSPC = "1M vs S&P 500";
   static readonly YEARLY_VS_GSPC = "1Y vs S&P 500";
   static readonly YTD_VS_GSPC = "YTD vs S&P 500";
+  static readonly DAILY_VOLUME = "1D Volume";
+  static readonly WEEKLY_VOLUME = "5D Avg Volume";
+  static readonly MONTHLY_VOLUME = "1M Avg Volume";
+  static readonly UNUSUAL_VOLUME = "Unusual Volume";
+  static readonly RECOMMENDATIONS = "Recommendations";
+  static readonly IMMEDIATE_TERM_OUTLOOK = "Immediate Term Outlook";
+  static readonly SHORT_TERM_OUTLOOK = "Short Term Outlook";
+  static readonly LONG_TERM_OUTLOOK = "Long Term Outlook";
 
   static readonly data = [
     ReportData.DAILY_CHANGE,
@@ -50,6 +58,14 @@ export class ReportData {
     ReportData.MONTHLY_VS_GSPC,
     ReportData.YEARLY_VS_GSPC,
     ReportData.YTD_VS_GSPC,
+    ReportData.DAILY_VOLUME,
+    ReportData.WEEKLY_VOLUME,
+    ReportData.MONTHLY_VOLUME,
+    ReportData.UNUSUAL_VOLUME,
+    ReportData.RECOMMENDATIONS,
+    ReportData.IMMEDIATE_TERM_OUTLOOK,
+    ReportData.SHORT_TERM_OUTLOOK,
+    ReportData.LONG_TERM_OUTLOOK,
   ];
 }
 
@@ -75,6 +91,17 @@ export class StockData {
   ytdChange: number | undefined;
 
   events: CalendarEvent[] | undefined;
+
+  dailyVolume: number | undefined;
+  weeklyVolume: number | undefined;
+  monthlyVolume: number | undefined;
+  avgVolume: number | undefined;
+
+  recommendations: string[] | undefined;
+
+  immediateTermOutlook: string | undefined;
+  shortTermOutlook: string | undefined;
+  longTermOutlook: string | undefined;
 
   constructor(symbol: string, data: string[] = [], neededData: string[] = []) {
     this.symbol = symbol;

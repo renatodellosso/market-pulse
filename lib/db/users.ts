@@ -164,3 +164,26 @@ export async function removeReport(userEmail: string, reportId: ObjectId) {
     }
   );
 }
+
+export async function getFirstWatchlistId(
+  userEmail: string
+): Promise<NamedId | null> {
+  const user = await getUserByEmail(userEmail);
+
+  if (!user) return null;
+
+  let watchlist = user.watchlists.length > 0 ? user.watchlists[0] : null;
+
+  // If the user doesn't have any watchlists, create a new one
+  if (user.watchlists.length == 0) {
+    console.log("Creating new watchlist...");
+    watchlist = {
+      _id: (await newWatchlist(userEmail)) as ObjectId,
+      name: "New Watchlist",
+    };
+  }
+
+  if (!watchlist) return null;
+
+  return watchlist;
+}

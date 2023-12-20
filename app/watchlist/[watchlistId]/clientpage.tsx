@@ -124,6 +124,21 @@ export default function ClientPage(props: {
     window.location.href = "/";
   }
 
+  async function makeCopy() {
+    console.log("Making copy...");
+
+    const promise = fetch(`/api/watchlist/copy?id=${watchlist._id}`);
+    toast.promise(promise, {
+      loading: "Making copy...",
+      success: "Made copy!",
+      error: "Failed to make copy.",
+    });
+
+    const json = await promise.then((res) => res.json());
+
+    window.location.href = "/watchlist/" + json.id;
+  }
+
   // Make sure to update getSymbols if we edit the HTML!
   function symbolListElement() {
     return (
@@ -177,6 +192,9 @@ export default function ClientPage(props: {
         <button className="btn btn-error" onClick={deleteWatchlist}>
           Delete Watchlist
         </button>
+        <button className="btn btn-primary" onClick={makeCopy}>
+          Make Copy
+        </button>
         <span className="text-primary">Symbols:</span>
         {symbolListElement()}
         <button className="btn btn-primary" onClick={addSymbol}>
@@ -191,6 +209,9 @@ export default function ClientPage(props: {
       className="flex-1 flex items-center justify-center flex-col space-y-2"
     >
       <h1 className="text-2xl text-primary">{watchlist.name}</h1>
+      <button className="btn btn-primary" onClick={makeCopy}>
+        Make Copy
+      </button>
       <span className="text-primary">Symbols:</span>
       {symbolListElement()}
     </div>

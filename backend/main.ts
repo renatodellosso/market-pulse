@@ -90,7 +90,7 @@ async function main() {
       // Check if tomorrow is a new month
       const month = date.getMonth();
       date.setDate(date.getDate() + 1);
-      if (date.getMonth() !== month) frequencies.push(ReportFrequency.MONTHLY);
+      if (date.getMonth() != month) frequencies.push(ReportFrequency.MONTHLY);
 
       await sendUpdates(frequencies);
 

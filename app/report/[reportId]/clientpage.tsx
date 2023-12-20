@@ -119,6 +119,21 @@ export default function ClientPage(props: {
     updateData(newData);
   }
 
+  async function makeCopy() {
+    console.log("Making copy...");
+
+    const promise = fetch(`/api/report/copy?id=${report._id}`);
+    toast.promise(promise, {
+      loading: "Making copy...",
+      success: "Made copy!",
+      error: "Failed to make copy.",
+    });
+
+    const json = await promise.then((res) => res.json());
+
+    window.location.href = "/report/" + json.id;
+  }
+
   function watchlistDropdown() {
     if (props.edit)
       return (
@@ -192,9 +207,9 @@ export default function ClientPage(props: {
     if (props.edit)
       return (
         <div className="flex flex-1 items-center justify-center flex-row pt-2">
-          <div className="h-full text-center">
+          <div className="h-full text-center w-full">
             Selected
-            <div className="flex flex-col space-y-1 ">
+            <div className="flex flex-col space-y-1 w-full">
               {data.map((d) => (
                 <button className="btn" key={d} onClick={() => unselectData(d)}>
                   {d}
@@ -203,9 +218,9 @@ export default function ClientPage(props: {
             </div>
           </div>
           <div className="divider lg:divider-horizontal"></div>
-          <div className="h-full text-center">
+          <div className="h-full text-center w-full">
             Unselected
-            <div className="flex flex-col space-y-1">
+            <div className="flex flex-col space-y-1 w-full">
               {unselectedData.map((d) => (
                 <button className="btn" key={d} onClick={() => selectData(d)}>
                   {d}
@@ -251,6 +266,9 @@ export default function ClientPage(props: {
           Delete
         </button>
       ) : null}
+      <button className="btn btn-primary" onClick={makeCopy}>
+        Make Copy
+      </button>
       {watchlistDropdown()}
       {frequencyDropdown()}
       {dataSelector()}

@@ -32,6 +32,7 @@ export async function getReport(id: string): Promise<WithId<Report> | null> {
   return reports.findOne({ _id: new ObjectId(id) });
 }
 
+// Use this to set a report's name, not updateReportName (that only exists for use in this function)
 export async function updateName(
   userEmail: string,
   id: ObjectId,

@@ -110,7 +110,9 @@ export default async function Dashboard(props: { user: User }) {
         ) : (
           <ul className="menu bg-neutral w-56 rounded-box">
             {props.user.incomingFriendRequests.map((r) => (
-              <li className="menu-item">{r.name}</li>
+              <li key={r._id.toString()} className="menu-item">
+                {r.name}
+              </li>
             ))}
           </ul>
         )}
@@ -133,7 +135,9 @@ export default async function Dashboard(props: { user: User }) {
         ) : (
           <ul className="menu bg-neutral w-56 rounded-box">
             {props.user.outgoingFriendRequests.map((r) => (
-              <li className="menu-item">{r.name}</li>
+              <li key={r._id.toString()} className="menu-item">
+                {r.name}
+              </li>
             ))}
           </ul>
         )}
@@ -144,7 +148,9 @@ export default async function Dashboard(props: { user: User }) {
         ) : (
           <ul className="menu bg-neutral w-56 rounded-box">
             {props.user.friends.map((r) => (
-              <li className="menu-item">{r.name}</li>
+              <li key={r._id.toString()} className="menu-item">
+                {r.name}
+              </li>
             ))}
           </ul>
         )}

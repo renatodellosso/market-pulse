@@ -68,8 +68,12 @@ export interface Email {
 
 declare module "next-auth" {
   interface User extends DefaultUser {
+    _id: ObjectId | string;
     watchlists: NamedId[];
     reports: NamedId[];
+    friends: NamedId[];
+    incomingFriendRequests: NamedId[];
+    outgoingFriendRequests: NamedId[];
   }
 
   interface Session extends DefaultSession {

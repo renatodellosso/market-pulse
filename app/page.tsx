@@ -1,5 +1,5 @@
 import SignIn from "@/components/signin";
-import { getUser, getUserByEmail, initUser } from "@/lib/db/users";
+import { getUser, getUserByEmail } from "@/lib/db/users";
 import { NamedId } from "@/lib/types";
 import { getServerSession } from "next-auth";
 import { getSession, useSession } from "next-auth/react";
@@ -54,31 +54,36 @@ export default async function Home() {
 
   const session = await getServerSession(authOptions);
 
-  if (!session) return mainPage();
+  if (!session)
+    return (
+      <div className="h-screen flex items-center justify-center flex-col">
+        <div className=" text-lg pb-6">Market Pulse</div>
+        <SignIn />
+      </div>
+    );
 
   let user = await getUserByEmail(session.user.email!);
 
   if (!user) return mainPage();
 
-  // Make sure user has watchlists and reports
-  if (!user?.watchlists || !user?.reports) {
-    console.log("User missing watchlists or reports");
-    await initUser(user);
-    user = await getUserByEmail(session.user.email!);
-  }
+  const stringifyNamedIdArray = (arr: NamedId[]) => {
+    return arr.map((item) => ({
+      _id: item._id.toString(),
+      name: item.name,
+    }));
+  };
 
-  if (!user) return mainPage();
+  user.watchlists = stringifyNamedIdArray(user?.watchlists);
+  user.reports = stringifyNamedIdArray(user?.reports);
+  user.friends = stringifyNamedIdArray(user?.friends);
+  user.incomingFriendRequests = stringifyNamedIdArray(
+    user.incomingFriendRequests
+  );
+  user.outgoingFriendRequests = stringifyNamedIdArray(
+    user.outgoingFriendRequests
+  );
 
-  const watchlists =
-    user?.watchlists?.map((w) => ({
-      _id: w._id.toString(),
-      name: w.name,
-    })) ?? [];
-  const reports =
-    user?.reports?.map((r) => ({
-      _id: r._id.toString(),
-      name: r.name,
-    })) ?? [];
+  user._id = user._id.toString();
 
-  return <Dashboard watchlists={watchlists} reports={reports} />;
+  return <Dashboard user={user} />;
 }

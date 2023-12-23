@@ -20,16 +20,17 @@ export async function getUserByEmail(
 }
 
 export async function initUser(user: User) {
-  console.log("Initializing user...");
-
   let users = await getUsers();
 
   users.updateOne(
-    { email: user.email },
+    { _id: ObjectId.createFromHexString(user.id) },
     {
       $set: {
-        reports: [],
-        watchlists: [],
+        reports: user.reports ?? [],
+        watchlists: user.watchlists ?? [],
+        friends: user.friends ?? [],
+        incomingFriendRequests: user.incomingFriendRequests ?? [],
+        outgoingFriendRequests: user.outgoingFriendRequests ?? [],
       },
     }
   );

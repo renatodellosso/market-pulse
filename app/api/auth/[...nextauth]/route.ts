@@ -17,10 +17,16 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      // if(user.reports === undefined) {
-      //     console.log("Initializing user...");
-      //     initUser(user);
-      // }
+      if (
+        user.reports === undefined ||
+        user.watchlists === undefined ||
+        user.friends === undefined ||
+        user.incomingFriendRequests === undefined ||
+        user.outgoingFriendRequests === undefined
+      ) {
+        console.log("Initializing user...");
+        initUser(user);
+      }
 
       return true;
     },

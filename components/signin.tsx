@@ -5,13 +5,13 @@ import { signIn, signOut, useSession } from "next-auth/react";
 export default function SignIn() {
   const { data: session, status } = useSession();
 
-  return status == "authenticated" ? (
-    <button className="btn btn-primary" onClick={() => signOut()}>
-      Sign Out
+  return status == "unauthenticated" ? (
+    <button className="btn btn-primary" onClick={() => signIn("google")}>
+      Sign In With Google
     </button>
   ) : (
-    <button className="btn btn-primary" onClick={() => signIn("google")}>
-      Sign In with Google
+    <button className="btn btn-primary" onClick={() => signOut()}>
+      Sign Out
     </button>
   );
 }

@@ -10,8 +10,6 @@ export function loadEnv() {
   // Check if all environment variables are set
   if (!process.env.MONGODB_URI)
     throw new Error("MONGO_URI environment variable not set");
-  if (!process.env.POLYGON_API_KEY)
-    throw new Error("POLYGON_API_KEY environment variable not set");
   if (!process.env.EMAIL_USERNAME)
     throw new Error("EMAIL_USERNAME environment variable not set");
   if (!process.env.EMAIL_PASSWORD)

@@ -20,6 +20,7 @@ export async function getUserByEmail(
 }
 
 export async function initUser(user: User) {
+<<<<<<< HEAD
   let users = await getUsers();
 
   users.updateOne(
@@ -31,6 +32,18 @@ export async function initUser(user: User) {
         friends: user.friends ?? [],
         incomingFriendRequests: user.incomingFriendRequests ?? [],
         outgoingFriendRequests: user.outgoingFriendRequests ?? [],
+=======
+  console.log("Initializing user...");
+
+  let users = await getUsers();
+
+  users.updateOne(
+    { email: user.email },
+    {
+      $set: {
+        reports: [],
+        watchlists: [],
+>>>>>>> 3ff5ce9924251a2a24fc7dafae90ecf3c3812bbe
       },
     }
   );
@@ -165,3 +178,29 @@ export async function removeReport(userEmail: string, reportId: ObjectId) {
     }
   );
 }
+<<<<<<< HEAD
+=======
+
+export async function getFirstWatchlistId(
+  userEmail: string
+): Promise<NamedId | null> {
+  const user = await getUserByEmail(userEmail);
+
+  if (!user) return null;
+
+  let watchlist = user.watchlists.length > 0 ? user.watchlists[0] : null;
+
+  // If the user doesn't have any watchlists, create a new one
+  if (user.watchlists.length == 0) {
+    console.log("Creating new watchlist...");
+    watchlist = {
+      _id: (await newWatchlist(userEmail)) as ObjectId,
+      name: "New Watchlist",
+    };
+  }
+
+  if (!watchlist) return null;
+
+  return watchlist;
+}
+>>>>>>> 3ff5ce9924251a2a24fc7dafae90ecf3c3812bbe

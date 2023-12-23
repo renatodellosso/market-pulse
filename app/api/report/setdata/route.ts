@@ -1,7 +1,7 @@
-import { NextApiRequest } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { ObjectId } from "mongodb";
+<<<<<<< HEAD
 import {
   getReport,
   setData,
@@ -11,6 +11,10 @@ import {
 } from "@/lib/db/reports";
 import { NextRequest, NextResponse } from "next/server";
 import { getWatchlist } from "@/lib/db/watchlists";
+=======
+import { getReport, setData } from "@/lib/db/reports";
+import { NextRequest, NextResponse } from "next/server";
+>>>>>>> 3ff5ce9924251a2a24fc7dafae90ecf3c3812bbe
 import { ReportData, ReportFrequency } from "@/lib/types";
 
 export async function GET(req: NextRequest) {
@@ -39,8 +43,13 @@ export async function GET(req: NextRequest) {
       if (!ReportData.data.includes(data))
         return NextResponse.json({ error: "Invalid data" }, { status: 400 });
       data = [data];
-    } else if (Array.isArray(data))
+    } else if (Array.isArray(data)) {
+      // Avoids issues with spaces in the URL
+      for (let i = 0; i < data.length; i++)
+        data[i] = data[i].replace("%20", "% ");
+
       data = data.filter((d) => ReportData.data.includes(d));
+    }
   } else data = [];
 
   id = new ObjectId(id!);

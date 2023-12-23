@@ -8,14 +8,14 @@ import {
   processFetchQueue,
 } from "./datahandler.mts";
 import { sendEmails } from "./emailhandler.mjs";
-import { exit } from "process";
+import yahooFinance from "yahoo-finance2";
 
 console.log("Starting backend...");
 
 loadEnv();
 
 async function sendUpdates(frequencies: string[]) {
-  console.log("Sending updates... Frquencies: " + frequencies.join(", "));
+  console.log("Sending updates... Frequencies: " + frequencies.join(", "));
 
   clearFetchQueue();
 
@@ -61,10 +61,11 @@ async function main() {
     try {
       let date = new Date();
 
+      // Make sure to comment the next line out before deploying!
       // await sendUpdates([ReportFrequency.DAILY, ReportFrequency.WEEKLY]);
 
-      // Wait until 6 PM
-      while (date.getHours() < 18 || date.getHours() > 18) {
+      // Wait until 6 PM EST
+      while (date.getHours() < 22 || date.getHours() > 22) {
         date = new Date();
         console.log("Waiting another hour... Current Time: " + date.toString());
         await new Promise((resolve) => setTimeout(resolve, 60 * 60 * 1000));
@@ -89,7 +90,7 @@ async function main() {
       // Check if tomorrow is a new month
       const month = date.getMonth();
       date.setDate(date.getDate() + 1);
-      if (date.getMonth() !== month) frequencies.push(ReportFrequency.MONTHLY);
+      if (date.getMonth() != month) frequencies.push(ReportFrequency.MONTHLY);
 
       await sendUpdates(frequencies);
 

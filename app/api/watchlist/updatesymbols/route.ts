@@ -28,6 +28,12 @@ export async function GET(req: NextRequest) {
   if (watchlist.ownerEmail != session.user.email)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  // Make sure to verify watchlist exists and user has permissions!
+  if (!watchlist)
+    return NextResponse.json({ error: "Watchlist not found" }, { status: 404 });
+  if (watchlist.ownerEmail != session.user.email)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   id = new ObjectId(id!);
   updateSymbols(id, symbols!);
 

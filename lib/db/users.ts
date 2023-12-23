@@ -20,7 +20,6 @@ export async function getUserByEmail(
 }
 
 export async function initUser(user: User) {
-<<<<<<< HEAD
   let users = await getUsers();
 
   users.updateOne(
@@ -32,18 +31,6 @@ export async function initUser(user: User) {
         friends: user.friends ?? [],
         incomingFriendRequests: user.incomingFriendRequests ?? [],
         outgoingFriendRequests: user.outgoingFriendRequests ?? [],
-=======
-  console.log("Initializing user...");
-
-  let users = await getUsers();
-
-  users.updateOne(
-    { email: user.email },
-    {
-      $set: {
-        reports: [],
-        watchlists: [],
->>>>>>> 3ff5ce9924251a2a24fc7dafae90ecf3c3812bbe
       },
     }
   );
@@ -178,8 +165,6 @@ export async function removeReport(userEmail: string, reportId: ObjectId) {
     }
   );
 }
-<<<<<<< HEAD
-=======
 
 export async function getFirstWatchlistId(
   userEmail: string
@@ -203,4 +188,3 @@ export async function getFirstWatchlistId(
 
   return watchlist;
 }
->>>>>>> 3ff5ce9924251a2a24fc7dafae90ecf3c3812bbe

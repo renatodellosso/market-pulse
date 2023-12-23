@@ -24,14 +24,6 @@ export default async function Page({
 
   // Check if user is authorized to view this watchlist
   const session = await getServerSession(authOptions);
-<<<<<<< HEAD
-  // At some point, we should set up the Next-Auth middleware to protect pages, but this works for now
-  if (!session) redirect("/api/auth/signin");
-  if (watchlist.ownerEmail !== session.user?.email)
-    return <div>Not authorized</div>;
-
-  return <ClientPage watchlist={watchlist} />;
-=======
 
   return (
     <ClientPage
@@ -39,5 +31,4 @@ export default async function Page({
       edit={(session ?? false) && watchlist.ownerEmail == session?.user?.email}
     />
   );
->>>>>>> 3ff5ce9924251a2a24fc7dafae90ecf3c3812bbe
 }

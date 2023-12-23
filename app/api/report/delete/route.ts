@@ -1,17 +1,6 @@
-import next, { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { NextRequest, NextResponse } from "next/server";
-<<<<<<< HEAD
-=======
-import { getSession } from "next-auth/react";
-import {
-  deleteWatchlist,
-  getWatchlist,
-  updateName,
-  updateSymbols,
-} from "@/lib/db/watchlists";
->>>>>>> 3ff5ce9924251a2a24fc7dafae90ecf3c3812bbe
 import { ObjectId } from "mongodb";
 import { deleteReport, getReport } from "@/lib/db/reports";
 

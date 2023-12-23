@@ -56,7 +56,9 @@ async function sendEmail(email: Email) {
     if (change > 0) color = "green";
     else if (change < 0) color = "red";
 
-    text += `<a href="https://finance.yahoo.com/quote/${stock.symbol}" style="color:${color}">${stock.symbol}</a>`;
+    text += `<a href="https://finance.yahoo.com/quote/${
+      stock.symbol
+    }" style="color:${color}">${stock.symbol.toUpperCase()}</a>`;
 
     if (email.data.includes(ReportData.DAILY_CHANGE))
       text += ` - ${formatPercentChange(stock.dailyChange!)}`;
@@ -199,12 +201,16 @@ async function sendEmail(email: Email) {
   }
   text += "</ul>";
 
-  await transporter.sendMail({
-    from: `"Market Pulse" <${process.env.EMAIL_USERNAME}>`,
-    to: email.recipient,
-    subject: `${email.name} - Market Pulse`,
-    html: text,
-  });
+  text +=
+    "<br><br>This does not constitute financial advice. Always do your own research before investing and " +
+    "double check any data before using it to make decisions.";
 
-  console.log(`Email sent to ${email.recipient}.`);
+  transporter
+    .sendMail({
+      from: `"Market Pulse" <${process.env.EMAIL_USERNAME}>`,
+      to: email.recipient,
+      subject: `${email.name} - Market Pulse`,
+      html: text,
+    })
+    .then(() => console.log(`Email sent to ${email.recipient}.`));
 }

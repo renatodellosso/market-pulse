@@ -66,11 +66,13 @@ export default async function Home() {
 
   if (!user) return mainPage();
 
-  const stringifyNamedIdArray = (arr: NamedId[]) => {
-    return arr.map((item) => ({
-      _id: item._id.toString(),
-      name: item.name,
-    }));
+  const stringifyNamedIdArray = (arr: NamedId[] | undefined) => {
+    return (
+      arr?.map((item) => ({
+        _id: item._id.toString(),
+        name: item.name,
+      })) ?? []
+    );
   };
 
   user.watchlists = stringifyNamedIdArray(user?.watchlists);

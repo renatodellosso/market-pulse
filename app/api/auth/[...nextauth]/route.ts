@@ -17,7 +17,6 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-<<<<<<< HEAD
       if (
         user.reports === undefined ||
         user.watchlists === undefined ||
@@ -28,12 +27,6 @@ export const authOptions: AuthOptions = {
         console.log("Initializing user...");
         initUser(user);
       }
-=======
-      // if(user.reports === undefined) {
-      //     console.log("Initializing user...");
-      //     initUser(user);
-      // }
->>>>>>> 3ff5ce9924251a2a24fc7dafae90ecf3c3812bbe
 
       return true;
     },

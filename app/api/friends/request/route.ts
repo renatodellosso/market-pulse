@@ -19,7 +19,6 @@ export async function GET(req: NextRequest) {
   if (!email)
     return NextResponse.json({ error: "Missing email" }, { status: 400 });
 
-  const users = await getUsers();
   let user = await getUserByEmail(email);
   if (!user)
     return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -64,8 +63,10 @@ export async function GET(req: NextRequest) {
 
   // Request looks good, add the request
 
+  const users = await getUsers();
+
   users.updateOne(
-    { email },
+    { email: email },
     {
       $push: {
         incomingFriendRequests: {

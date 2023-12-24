@@ -16,11 +16,9 @@ export async function GET(req: NextRequest) {
 
   // Verify the request
 
-  console.log("Checking email...");
   if (!email)
     return NextResponse.json({ error: "Missing email" }, { status: 400 });
 
-  console.log("Checking user...");
   let user = await getUserByEmail(email);
   if (!user)
     return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -28,12 +26,10 @@ export async function GET(req: NextRequest) {
   session.user =
     (await getUserByEmail(session.user.email ?? "")) ?? session.user;
 
-  console.log("Checking if request is to self...");
   if (user.email == session.user.email)
     return NextResponse.json({ error: "Cannot add yourself" }, { status: 400 });
 
   if (!user.friends) {
-    console.log("Initializing user...");
     await initUser(user);
     user = await getUserByEmail(email);
 
@@ -41,13 +37,11 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
-  console.log("Checking if already friends...");
   if (
     user.friends.includes({ _id: session.user._id, name: session.user.name! })
   )
     return NextResponse.json({ error: "Already friends" }, { status: 400 });
 
-  console.log("Checking if already requested...");
   if (
     user.incomingFriendRequests.includes({
       _id: session.user._id,
@@ -56,7 +50,6 @@ export async function GET(req: NextRequest) {
   )
     return NextResponse.json({ error: "Already requested" }, { status: 400 });
 
-  console.log("Checking if has incoming request request...");
   if (
     session.user.incomingFriendRequests.includes({
       _id: user._id,
@@ -69,7 +62,6 @@ export async function GET(req: NextRequest) {
     );
 
   // Request looks good, add the request
-  console.log("Adding request...");
 
   const users = await getUsers();
 

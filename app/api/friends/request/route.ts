@@ -3,7 +3,7 @@ import { NextApiRequest } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { NextRequest, NextResponse } from "next/server";
-import { getUser, initUser } from "@/lib/db/users";
+import { getUser, getUserByEmail, initUser } from "@/lib/db/users";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Missing email" }, { status: 400 });
 
   const users = await getUsers();
-  let user = await users.findOne({ email });
+  let user = await users.findOne({ email: email });
   if (!user)
     return NextResponse.json({ error: "User not found" }, { status: 404 });
 
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
 
   if (!user.friends) {
     await initUser(user);
-    user = await getUser(email);
+    user = await getUserByEmail(email);
 
     if (!user)
       return NextResponse.json({ error: "User not found" }, { status: 404 });

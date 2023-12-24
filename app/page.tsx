@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { getSession, useSession } from "next-auth/react";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import Dashboard from "@/components/dashboard";
+import { stringifyNamedIdArray, stringifyUser } from "@/lib/utils";
 
 export default async function Home() {
   function mainPage() {
@@ -66,26 +67,7 @@ export default async function Home() {
 
   if (!user) return mainPage();
 
-  const stringifyNamedIdArray = (arr: NamedId[] | undefined) => {
-    return (
-      arr?.map((item) => ({
-        _id: item._id.toString(),
-        name: item.name,
-      })) ?? []
-    );
-  };
+  user = stringifyUser(user);
 
-  user.watchlists = stringifyNamedIdArray(user?.watchlists);
-  user.reports = stringifyNamedIdArray(user?.reports);
-  user.friends = stringifyNamedIdArray(user?.friends);
-  user.incomingFriendRequests = stringifyNamedIdArray(
-    user.incomingFriendRequests
-  );
-  user.outgoingFriendRequests = stringifyNamedIdArray(
-    user.outgoingFriendRequests
-  );
-
-  user._id = user._id.toString();
-
-  return <Dashboard user={user} />;
+  return <Dashboard user={user!} />;
 }

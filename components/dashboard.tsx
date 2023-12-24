@@ -9,6 +9,10 @@ import { useState } from "react";
 export default function Dashboard(props: { user: User }) {
   const { watchlists, reports } = props.user;
 
+  const [friends, setFriends] = useState<NamedId[]>(props.user.friends);
+  const [incomingFriendRequests, setIncomingFriendRequests] = useState<
+    NamedId[]
+  >(props.user.incomingFriendRequests);
   const [outgoingFriendRequests, setOutgoingFriendRequests] = useState<
     NamedId[]
   >(props.user.outgoingFriendRequests);
@@ -61,10 +65,65 @@ export default function Dashboard(props: { user: User }) {
     setOutgoingFriendRequests([...outgoingFriendRequests, data.user]);
   }
 
+  async function declineFriendRequest(e: any, id: string) {
+    e.preventDefault();
+
+    console.log("Declining friend request", id);
+    const promise = fetch("/api/friends/decline?id=" + id);
+    toast.promise(promise, {
+      loading: "Declining friend request...",
+      success: "Friend request declined!",
+      error: "Failed to decline friend request.",
+    });
+
+    const res = await promise;
+    const json = await res.json();
+    if (json.error) {
+      toast.error(json.error);
+      return;
+    }
+
+    const data = json.data as { user: NamedId };
+
+    setOutgoingFriendRequests(
+      outgoingFriendRequests.filter((r) => r._id !== data.user._id)
+    );
+    setIncomingFriendRequests(
+      incomingFriendRequests.filter((r) => r._id !== data.user._id)
+    );
+  }
+
+  async function acceptFriendRequest(e: any, id: string) {
+    e.preventDefault();
+
+    console.log("Accepting friend request", id);
+    const promise = fetch("/api/friends/accept?id=" + id);
+    toast.promise(promise, {
+      loading: "Accepting friend request...",
+      success: "Friend request accepted!",
+      error: "Failed to accept friend request.",
+    });
+
+    const res = await promise;
+    const json = await res.json();
+
+    if (json.error) {
+      toast.error(json.error);
+      return;
+    }
+
+    const data = json.data as { user: NamedId };
+
+    setIncomingFriendRequests(
+      incomingFriendRequests.filter((r) => r._id !== data.user._id)
+    );
+    setFriends([...friends, data.user]);
+  }
+
   return (
     <div className="w-fit flex-1 flex items-center justify-center flex-row">
       <div className="w-[50%] flex flex-col items-center space-y-2">
-        <h1 className="text-xl">Watchlists</h1>
+        <h1 className="text-xl text-primary">Watchlists</h1>
         {watchlists.length > 0 ? (
           <ul className="menu bg-neutral w-56 rounded-box">
             {watchlists.map((w) => (
@@ -88,7 +147,7 @@ export default function Dashboard(props: { user: User }) {
       <div className="divider lg:divider-horizontal"></div>
 
       <div className="w-[50%] flex flex-col items-center space-y-2">
-        <h1 className="text-xl">Reports</h1>
+        <h1 className="text-xl text-primary">Reports</h1>
         {reports.length > 0 ? (
           <ul className="menu bg-neutral w-56 rounded-box">
             {reports.map((r) => (
@@ -112,22 +171,39 @@ export default function Dashboard(props: { user: User }) {
       <div className="divider lg:divider-horizontal"></div>
 
       <div className="w-[50%] flex flex-col items-center space-y-2">
-        <h1 className="text-xl">Friend Requests</h1>
+        <h1 className="text-xl text-primary">Friend Requests</h1>
 
-        <p>Incoming</p>
-        {props.user.incomingFriendRequests.length === 0 ? (
+        <p className="text-secondary">Incoming</p>
+        {incomingFriendRequests.length === 0 ? (
           <p>No incoming friend requests</p>
         ) : (
-          <ul className="menu bg-neutral w-56 rounded-box">
-            {props.user.incomingFriendRequests.map((r) => (
-              <li key={r._id.toString()} className="menu-item">
+          <ul className="menu bg-neutral w-80 rounded-box">
+            {incomingFriendRequests.map((r) => (
+              <li
+                key={r._id.toString()}
+                className="menu-item flex flex-row justify-between items-center"
+              >
                 {r.name}
+                <div className="flex flex-row w-[55%]">
+                  <button
+                    className="btn btn-success btn-sm w-[50%]"
+                    onClick={(e) => acceptFriendRequest(e, r._id.toString())}
+                  >
+                    Accept
+                  </button>
+                  <button
+                    className="btn btn-error btn-sm w-[50%]"
+                    onClick={(e) => declineFriendRequest(e, r._id.toString())}
+                  >
+                    Decline
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
         )}
 
-        <p>Outgoing</p>
+        <p className="text-secondary">Outgoing</p>
         <div className="flex flex-row space-x-2">
           <input
             id="friend-request-email"
@@ -143,23 +219,34 @@ export default function Dashboard(props: { user: User }) {
         {outgoingFriendRequests.length === 0 ? (
           <p>No outgoing friend requests</p>
         ) : (
-          <ul className="menu bg-neutral w-56 rounded-box">
+          <ul className="bg-neutral w-80 rounded-box menu">
             {outgoingFriendRequests.map((r) => (
-              <li key={r._id.toString()} className="menu-item">
+              <li
+                key={r._id.toString()}
+                className="menu-item flex flex-row justify-between items-center"
+              >
                 {r.name}
+                <button
+                  className="btn btn-error btn-sm w-[30%]"
+                  onClick={(e) => declineFriendRequest(e, r._id.toString())}
+                >
+                  Cancel
+                </button>
               </li>
             ))}
           </ul>
         )}
 
-        <h1 className="text-xl">Friends</h1>
-        {props.user.friends.length === 0 ? (
+        <h1 className="text-xl text-primary">Friends</h1>
+        {friends.length === 0 ? (
           <p>No friends</p>
         ) : (
-          <ul className="menu bg-neutral w-56 rounded-box">
-            {props.user.friends.map((r) => (
-              <li key={r._id.toString()} className="menu-item">
-                {r.name}
+          <ul className="bg-neutral w-80 rounded-box pt-1">
+            {friends.map((r) => (
+              <li key={r._id.toString()} className="pl-2 pb-1 text-sm">
+                <Link className="link" href={`/profile/${r._id.toString()}`}>
+                  {r.name}
+                </Link>
               </li>
             ))}
           </ul>

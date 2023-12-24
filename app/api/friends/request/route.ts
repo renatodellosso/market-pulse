@@ -38,19 +38,23 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
-  if (user.friends.find((friend) => friend._id == session.user._id))
+  if (
+    user.friends.find(
+      (friend) => friend._id.toString() == session.user._id.toString()
+    )
+  )
     return NextResponse.json({ error: "Already friends" }, { status: 400 });
 
   if (
     user.incomingFriendRequests.find(
-      (request) => request._id == session.user._id
+      (request) => request._id.toString() == session.user._id.toString()
     )
   )
     return NextResponse.json({ error: "Already requested" }, { status: 400 });
 
   if (
     session.user.incomingFriendRequests.find(
-      (request) => request._id == user?._id
+      (request) => request._id.toString() == user?._id.toString()
     )
   )
     return NextResponse.json(

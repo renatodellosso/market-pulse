@@ -92,9 +92,11 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({
     status: 200,
-    user: {
-      _id: user._id,
-      name: user.name,
+    data: {
+      user: {
+        _id: user._id,
+        name: user.name,
+      },
     },
   });
 }

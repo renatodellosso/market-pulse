@@ -20,9 +20,12 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Missing email" }, { status: 400 });
 
   const users = await getUsers();
-  let user = await users.findOne({ email: email });
+  let user = await getUserByEmail(email);
   if (!user)
     return NextResponse.json({ error: "User not found" }, { status: 404 });
+
+  session.user =
+    (await getUserByEmail(session.user.email ?? "")) ?? session.user;
 
   if (user.email == session.user.email)
     return NextResponse.json({ error: "Cannot add yourself" }, { status: 400 });

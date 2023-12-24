@@ -33,6 +33,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Cannot add yourself" }, { status: 400 });
 
   if (!user.friends) {
+    console.log("Initializing user...");
     await initUser(user);
     user = await getUserByEmail(email);
 

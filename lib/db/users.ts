@@ -23,7 +23,7 @@ export async function initUser(user: User) {
   let users = await getUsers();
 
   users.updateOne(
-    { _id: ObjectId.createFromHexString(user.id) },
+    { _id: user._id ?? ObjectId.createFromHexString(user.id) },
     {
       $set: {
         reports: user.reports ?? [],

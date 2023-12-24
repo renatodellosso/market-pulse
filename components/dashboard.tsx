@@ -3,9 +3,15 @@
 import { User } from "next-auth";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { NamedId } from "../lib/types";
+import { useState } from "react";
 
 export default async function Dashboard(props: { user: User }) {
   const { watchlists, reports } = props.user;
+
+  const [outgoingFriendRequests, setOutgoingFriendRequests] = useState<
+    NamedId[]
+  >(props.user.outgoingFriendRequests);
 
   async function newWatchlist() {
     console.log("Creating new watchlist...");
@@ -48,7 +54,11 @@ export default async function Dashboard(props: { user: User }) {
     const json = await res.json();
     if (json.error) {
       toast.error(json.error);
+      return;
     }
+
+    const data = json.data as { user: NamedId };
+    setOutgoingFriendRequests([...outgoingFriendRequests, data.user]);
   }
 
   return (
@@ -130,11 +140,11 @@ export default async function Dashboard(props: { user: User }) {
             Send
           </button>
         </div>
-        {props.user.outgoingFriendRequests.length === 0 ? (
+        {outgoingFriendRequests.length === 0 ? (
           <p>No outgoing friend requests</p>
         ) : (
           <ul className="menu bg-neutral w-56 rounded-box">
-            {props.user.outgoingFriendRequests.map((r) => (
+            {outgoingFriendRequests.map((r) => (
               <li key={r._id.toString()} className="menu-item">
                 {r.name}
               </li>

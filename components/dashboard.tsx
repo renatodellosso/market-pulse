@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { NamedId } from "../lib/types";
 import { useState } from "react";
 
-export default async function Dashboard(props: { user: User }) {
+export default function Dashboard(props: { user: User }) {
   const { watchlists, reports } = props.user;
 
   const [outgoingFriendRequests, setOutgoingFriendRequests] = useState<

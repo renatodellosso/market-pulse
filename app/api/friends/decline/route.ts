@@ -46,6 +46,9 @@ export async function GET(req: NextRequest) {
     { _id: new ObjectId(session.user._id) },
     {
       $pull: {
+        outgoingFriendRequests: {
+          _id: new ObjectId(id),
+        },
         incomingFriendRequests: {
           _id: new ObjectId(id),
         },
@@ -58,6 +61,9 @@ export async function GET(req: NextRequest) {
     {
       $pull: {
         outgoingFriendRequests: {
+          _id: new ObjectId(session.user._id),
+        },
+        incomingFriendRequests: {
           _id: new ObjectId(session.user._id),
         },
       },

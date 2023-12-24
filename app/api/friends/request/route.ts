@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { NextRequest, NextResponse } from "next/server";
 import { getUser, getUserByEmail, initUser } from "@/lib/db/users";
+import { request } from "http";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -37,24 +38,20 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
-  if (
-    user.friends.includes({ _id: session.user._id, name: session.user.name! })
-  )
+  if (user.friends.find((friend) => friend._id == session.user._id))
     return NextResponse.json({ error: "Already friends" }, { status: 400 });
 
   if (
-    user.incomingFriendRequests.includes({
-      _id: session.user._id,
-      name: session.user.name!,
-    })
+    user.incomingFriendRequests.find(
+      (request) => request._id == session.user._id
+    )
   )
     return NextResponse.json({ error: "Already requested" }, { status: 400 });
 
   if (
-    session.user.incomingFriendRequests.includes({
-      _id: user._id,
-      name: user.name!,
-    })
+    session.user.incomingFriendRequests.find(
+      (request) => request._id == user?._id
+    )
   )
     return NextResponse.json(
       { error: "They have already sent you a request. Accept that request" },

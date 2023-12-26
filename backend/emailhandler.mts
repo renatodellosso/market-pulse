@@ -38,8 +38,7 @@ async function sendEmail(email: Email) {
   }
 
   // Remove duplicate data
-  const uniqueData = new Set(email.data);
-  email.data = Array.from(uniqueData);
+  email.data = Array.from(new Set(email.data));
 
   let text = `<h3>${email.name}</h3>`;
 

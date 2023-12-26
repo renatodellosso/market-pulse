@@ -8,7 +8,7 @@ import {
   processFetchQueue,
 } from "./datahandler.mts";
 import { sendEmails } from "./emailhandler.mjs";
-import yahooFinance from "yahoo-finance2";
+import { isMarketOpen } from "./apihandler.mts";
 
 console.log("Starting backend...");
 
@@ -64,8 +64,13 @@ async function main() {
       // Make sure to comment the next line out before deploying!
       // await sendUpdates([ReportFrequency.DAILY, ReportFrequency.WEEKLY]);
 
+      // Only send daily reports if the market was open between now and the last report
+      let marketOpen = false;
+
       // Wait until 6 PM EST
       while (date.getHours() < 22 || date.getHours() > 22) {
+        marketOpen = await isMarketOpen();
+
         date = new Date();
         console.log("Waiting another hour... Current Time: " + date.toString());
         await new Promise((resolve) => setTimeout(resolve, 60 * 60 * 1000));
@@ -83,7 +88,7 @@ async function main() {
       console.log("Done waiting.");
 
       const frequencies: string[] = [];
-      if (date.getDay() > 0 && date.getDay() < 6)
+      if (date.getDay() > 0 && date.getDay() < 6 && marketOpen)
         frequencies.push(ReportFrequency.DAILY);
       if (date.getDay() === 6) frequencies.push(ReportFrequency.WEEKLY);
 
@@ -93,6 +98,8 @@ async function main() {
       if (date.getMonth() != month) frequencies.push(ReportFrequency.MONTHLY);
 
       await sendUpdates(frequencies);
+
+      marketOpen = false;
 
       // Wait an hour before checking again
       await new Promise((resolve) => setTimeout(resolve, 60 * 60 * 1000));

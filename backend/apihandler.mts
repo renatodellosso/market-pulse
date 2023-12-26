@@ -1,6 +1,12 @@
 import { CalendarEvent } from "@/lib/types";
 import yahooFinance from "yahoo-finance2";
 
+export async function isMarketOpen(): Promise<boolean> {
+  const data = await yahooFinance.quoteSummary("SPY");
+
+  return data.price?.marketState === "REGULAR";
+}
+
 export async function dailyChange(symbol: string): Promise<number> {
   const data = await yahooFinance.quoteSummary(symbol);
 

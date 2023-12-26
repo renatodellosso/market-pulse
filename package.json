@@ -14,7 +14,7 @@
     "@polygon.io/client-js": "github:polygon-io/client-js",
     "dotenv": "^16.3.1",
     "mongodb": "^6.2.0",
-    "next": "14.0.1",
+    "next": "14.0.4",
     "next-auth": "^4.24.4",
     "nodemailer": "^6.9.7",
     "react": "^18",
@@ -32,7 +32,7 @@
     "autoprefixer": "^10.0.1",
     "daisyui": "^3.9.4",
     "eslint": "^8",
-    "eslint-config-next": "14.0.1",
+    "eslint-config-next": "14.0.4",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"

@@ -81,8 +81,8 @@ export interface Report {
 export class StockData {
   symbol: string;
 
-  data: string[] = [];
-  neededData: string[] = []; // Data that we need to fetch, including data that was not explicitly requested
+  data: Set<string> = new Set<string>();
+  neededData: Set<string> = new Set<string>(); // Data that we need to fetch, including data that was not explicitly requested
 
   dailyChange: number | undefined;
   weeklyChange: number | undefined;
@@ -103,7 +103,11 @@ export class StockData {
   shortTermOutlook: string | undefined;
   longTermOutlook: string | undefined;
 
-  constructor(symbol: string, data: string[] = [], neededData: string[] = []) {
+  constructor(
+    symbol: string,
+    data: Set<string> = new Set<string>(),
+    neededData: Set<string> = new Set<string>()
+  ) {
     this.symbol = symbol;
     this.data = data;
     this.neededData = neededData;

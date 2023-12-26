@@ -53,10 +53,18 @@ export function addSymbolToFetchQueue(symbol: string, data: string[]) {
   if (stocks.has(symbol)) {
     const stockData = stocks.get(symbol);
 
-    stockData?.data.push(...data);
-    stockData?.neededData.push(...neededData);
+    for (const data of neededData) {
+      stockData?.data.add(data);
+    }
+    for (const data of neededData) {
+      stockData?.neededData.add(data);
+    }
   } else {
-    const stockData = new StockData(symbol, data, neededData);
+    const stockData = new StockData(
+      symbol,
+      new Set<string>(data),
+      new Set<string>(neededData)
+    );
 
     stocks.set(symbol, stockData);
   }
@@ -71,14 +79,14 @@ export async function processFetchQueue() {
     "^GSPC",
     new StockData(
       "^GSPC",
-      [],
-      [
+      new Set<string>(),
+      new Set<string>([
         ReportData.DAILY_CHANGE,
         ReportData.WEEKLY_CHANGE,
         ReportData.MONTHLY_CHANGE,
         ReportData.YEARLY_CHANGE,
         ReportData.YTD_CHANGE,
-      ]
+      ])
     )
   );
 

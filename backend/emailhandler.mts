@@ -37,6 +37,9 @@ async function sendEmail(email: Email) {
     }
   }
 
+  // Remove duplicate data
+  const uniqueData = [...new Set(email.data)];
+
   let text = `<h3>${email.name}</h3>`;
 
   let gspc = undefined;

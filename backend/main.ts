@@ -68,11 +68,16 @@ async function main() {
       let marketOpen = false;
 
       // Wait until 6 PM EST
-      while (date.getHours() < 22 || date.getHours() > 22) {  
-        marketOpen = await isMarketOpen();
+      while (date.getHours() < 22 || date.getHours() > 22) {
+        marketOpen = marketOpen || (await isMarketOpen());
 
         date = new Date();
-        console.log("Waiting another hour... Current Time: " + date.toString());
+        console.log(
+          "Waiting another hour... Current Time: " +
+            date.toString() +
+            " Market Open: " +
+            marketOpen
+        );
         await new Promise((resolve) => setTimeout(resolve, 60 * 60 * 1000));
       }
 

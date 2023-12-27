@@ -208,6 +208,9 @@ async function sendEmail(email: Email) {
     "<br><br>This does not constitute financial advice. Always do your own research before investing and " +
     "double check any data before using it to make decisions.";
 
+  text +=
+    "<br><br>To edit your report, go to: <a href='https://marketpulse.vercel.app'>Market Pulse</a>";
+
   transporter
     .sendMail({
       from: `"Market Pulse" <${process.env.EMAIL_USERNAME}>`,

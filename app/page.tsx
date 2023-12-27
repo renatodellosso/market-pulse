@@ -9,8 +9,8 @@ export default async function Home() {
   function mainPage() {
     return (
       <div className="h-screen flex items-center justify-center flex-col">
-        <div className=" h-1/2 flex flex-col justify-center items-center">
-          <div className=" text-xl font-medium pb-6">Market Pulse</div>
+        <div className="h-1/2 flex flex-col justify-center items-center">
+          <div className="text-xl font-medium pb-6">Market Pulse</div>
           <SignIn />
           <div className="pt-3 text-center text-lg">
             Stay up to date on the pulse of the market with Market Pulse
@@ -52,11 +52,9 @@ export default async function Home() {
   }
 
   const session = await getServerSession(authOptions);
-
   if (!session) return mainPage();
 
   let user = await getUserByEmail(session.user.email!);
-
   if (!user) return mainPage();
 
   user = stringifyUser(user);

@@ -62,7 +62,7 @@ async function main() {
       let date = new Date();
 
       // Make sure to comment the next line out before deploying!
-      // await sendUpdates([ReportFrequency.DAILY, ReportFrequency.WEEKLY]);
+      await sendUpdates([ReportFrequency.DAILY, ReportFrequency.WEEKLY]);
 
       // Only send daily reports if the market was open between now and the last report
       let marketOpen = false;

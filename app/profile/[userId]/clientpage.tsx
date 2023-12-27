@@ -66,7 +66,7 @@ export default function ClientPage(props: {
         relationshipElement = (
           <div className="pb-4">
             Friends -{" "}
-            <button className="btn btn-error" onClick={removeFriend}>
+            <button className="btn btn-error btn-sm" onClick={removeFriend}>
               Remove
             </button>
           </div>
@@ -76,7 +76,10 @@ export default function ClientPage(props: {
         relationshipElement = (
           <div className="pb-4">
             Friend request sent -{" "}
-            <button className="btn btn-error" onClick={declineFriendRequest}>
+            <button
+              className="btn btn-error btn-sm"
+              onClick={declineFriendRequest}
+            >
               Cancel
             </button>
           </div>
@@ -86,10 +89,16 @@ export default function ClientPage(props: {
         relationshipElement = (
           <div className="pb-4">
             Friend request received -{" "}
-            <button className="btn btn-success" onClick={acceptFriendRequest}>
+            <button
+              className="btn btn-success btn-sm"
+              onClick={acceptFriendRequest}
+            >
               Accept
             </button>
-            <button className="btn btn-error" onClick={declineFriendRequest}>
+            <button
+              className="btn btn-error btn-sm"
+              onClick={declineFriendRequest}
+            >
               Decline
             </button>
           </div>
@@ -99,7 +108,10 @@ export default function ClientPage(props: {
         relationshipElement = (
           <div className="pb-4">
             Not friends -{" "}
-            <button className="btn btn-primary" onClick={sendFriendRequest}>
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={sendFriendRequest}
+            >
               Send Friend Request
             </button>
           </div>

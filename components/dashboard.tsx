@@ -193,7 +193,7 @@ export default function Dashboard(props: { user: User }) {
             {friendList.map((r) => (
               <li
                 key={r._id.toString()}
-                className="pl-2 pb-1 text-sm flex flex-row justify-between items-center"
+                className="pl-2 pr-2 pb-1 text-sm flex flex-row justify-between items-center"
               >
                 <Link className="link" href={`/profile/${r._id.toString()}`}>
                   {r.name}

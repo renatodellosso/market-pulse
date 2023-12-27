@@ -1,8 +1,11 @@
 "use server";
 
-import { getUser } from "@/lib/db/users";
+import { getUser, getUserByEmail } from "@/lib/db/users";
 import { stringifyUser } from "../../../lib/utils";
 import ClientPage from "./clientpage";
+import { getSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import authOptions from "@/app/api/auth/authoptions";
 
 export default async function Page({ params }: { params: { userId: string } }) {
   const { userId } = params;
@@ -21,7 +24,15 @@ export default async function Page({ params }: { params: { userId: string } }) {
       </div>
     );
 
-  user = stringifyUser(user);
+  const session = await getServerSession(authOptions);
+  if (session)
+    session.user =
+      (await getUserByEmail(session.user.email ?? "")) ?? session.user;
 
-  return <ClientPage user={user} />;
+  
+
+  user = stringifyUser(user);
+  if (session?.user) session.user = stringifyUser(session?.user);
+
+  return <ClientPage user={user} self={session?.user} />;
 }

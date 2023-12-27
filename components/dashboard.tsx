@@ -5,11 +5,12 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { NamedId } from "../lib/types";
 import { useState } from "react";
+import { friends } from "@/lib/friendutils";
 
 export default function Dashboard(props: { user: User }) {
   const { watchlists, reports } = props.user;
 
-  const [friends, setFriends] = useState<NamedId[]>(props.user.friends);
+  const [friendList, setFriendList] = useState<NamedId[]>(props.user.friends);
   const [incomingFriendRequests, setIncomingFriendRequests] = useState<
     NamedId[]
   >(props.user.incomingFriendRequests);
@@ -34,116 +35,37 @@ export default function Dashboard(props: { user: User }) {
   }
 
   async function sendFriendRequest(e: any) {
-    e.preventDefault();
-
-    const email = (
-      document.getElementById("friend-request-email") as HTMLInputElement | null
-    )?.value;
-
-    if (!email) return;
-    if (!email.includes("@")) {
-      toast.error("Invalid email.");
-      return;
-    }
-
-    console.log("Sending friend request to", email);
-    const promise = fetch("/api/friends/request?email=" + email);
-    toast.promise(promise, {
-      loading: "Sending friend request...",
-      success: "Friend request sent!",
-      error: "Failed to send friend request.",
-    });
-
-    const res = await promise;
-    const json = await res.json();
-    if (json.error) {
-      toast.error(json.error);
-      return;
-    }
-
-    const data = json.data as { user: NamedId };
-    setOutgoingFriendRequests([...outgoingFriendRequests, data.user]);
+    const user = await friends.sendFriendRequest(e);
+    if (user) setOutgoingFriendRequests([...outgoingFriendRequests, user]);
   }
 
   async function declineFriendRequest(e: any, id: string) {
-    e.preventDefault();
-
-    console.log("Declining friend request", id);
-    const promise = fetch("/api/friends/decline?id=" + id);
-    toast.promise(promise, {
-      loading: "Declining friend request...",
-      success: "Friend request declined!",
-      error: "Failed to decline friend request.",
-    });
-
-    const res = await promise;
-    const json = await res.json();
-    if (json.error) {
-      toast.error(json.error);
-      return;
+    const user = await friends.declineFriendRequest(e, id);
+    if (user) {
+      setIncomingFriendRequests(
+        incomingFriendRequests.filter((u) => u._id !== user._id)
+      );
+      setOutgoingFriendRequests(
+        outgoingFriendRequests.filter((u) => u._id !== user._id)
+      );
     }
-
-    const data = json.data as { user: NamedId };
-
-    setOutgoingFriendRequests(
-      outgoingFriendRequests.filter((r) => r._id !== data.user._id)
-    );
-    setIncomingFriendRequests(
-      incomingFriendRequests.filter((r) => r._id !== data.user._id)
-    );
   }
 
   async function acceptFriendRequest(e: any, id: string) {
-    e.preventDefault();
-
-    console.log("Accepting friend request", id);
-    const promise = fetch("/api/friends/accept?id=" + id);
-    toast.promise(promise, {
-      loading: "Accepting friend request...",
-      success: "Friend request accepted!",
-      error: "Failed to accept friend request.",
-    });
-
-    const res = await promise;
-    const json = await res.json();
-
-    if (json.error) {
-      toast.error(json.error);
-      return;
+    const user = await friends.acceptFriendRequest(e, id);
+    if (user) {
+      setIncomingFriendRequests(
+        incomingFriendRequests.filter((u) => u._id !== user._id)
+      );
+      setFriendList([...friendList, user]);
     }
-
-    const data = json.data as { user: NamedId };
-
-    setIncomingFriendRequests(
-      incomingFriendRequests.filter((r) => r._id !== data.user._id)
-    );
-    setFriends([...friends, data.user]);
   }
 
   async function removeFriend(e: any, id: string) {
-    e.preventDefault();
-
-    if (!confirm("Are you sure you want to remove this friend?")) return;
-
-    console.log("Removing friend", id);
-    const promise = fetch("/api/friends/remove?id=" + id);
-    toast.promise(promise, {
-      loading: "Removing friend...",
-      success: "Friend removed!",
-      error: "Failed to remove friend.",
-    });
-
-    const res = await promise;
-    const json = await res.json();
-
-    if (json.error) {
-      toast.error(json.error);
-      return;
+    const user = await friends.removeFriend(e, id);
+    if (user) {
+      setFriendList(friendList.filter((u) => u._id !== user._id));
     }
-
-    const data = json.data as { user: NamedId };
-
-    setFriends(friends.filter((r) => r._id !== data.user._id));
   }
 
   return (
@@ -264,11 +186,11 @@ export default function Dashboard(props: { user: User }) {
         )}
 
         <h1 className="text-xl text-primary">Friends</h1>
-        {friends.length === 0 ? (
+        {friendList.length === 0 ? (
           <p>No friends</p>
         ) : (
           <ul className="bg-neutral w-80 rounded-box pt-1">
-            {friends.map((r) => (
+            {friendList.map((r) => (
               <li
                 key={r._id.toString()}
                 className="pl-2 pb-1 text-sm flex flex-row justify-between items-center"

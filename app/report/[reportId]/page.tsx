@@ -2,7 +2,7 @@
 
 import ClientPage from "./clientpage";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import authOptions from "../../api/auth/authoptions";
 import { getReport } from "@/lib/db/reports";
 import { getUserByEmail } from "@/lib/db/users";
 

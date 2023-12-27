@@ -1,6 +1,6 @@
 import { NextApiRequest } from "next";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import authOptions from "../../auth/authoptions";
 import { ObjectId } from "mongodb";
 import {
   getReport,

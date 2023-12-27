@@ -68,7 +68,7 @@ async function main() {
       let marketOpen = false;
 
       // Wait until 6 PM EST
-      while (date.getHours() < 22 || date.getHours() > 22) {
+      while (date.getHours() < 22 || date.getHours() > 22) {  
         marketOpen = await isMarketOpen();
 
         date = new Date();

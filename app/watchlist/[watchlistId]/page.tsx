@@ -5,7 +5,7 @@ import ClientPage from "./clientpage";
 import { watch } from "fs";
 import { getSession } from "next-auth/react";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import authOptions from "../../api/auth/authoptions";
 import { redirect } from "next/navigation";
 
 // Fetch data at request time, then pass to a client component, thus avoiding having to write an API route

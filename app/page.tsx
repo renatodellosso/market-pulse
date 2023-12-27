@@ -1,11 +1,9 @@
 import SignIn from "@/components/signin";
-import { getUser, getUserByEmail } from "@/lib/db/users";
-import { NamedId } from "@/lib/types";
+import { getUserByEmail } from "@/lib/db/users";
 import { getServerSession } from "next-auth";
-import { getSession, useSession } from "next-auth/react";
-import { authOptions } from "./api/auth/[...nextauth]/route";
+import authOptions from "../app/api/auth/authoptions";
 import Dashboard from "@/components/dashboard";
-import { stringifyNamedIdArray, stringifyUser } from "@/lib/utils";
+import { stringifyUser } from "@/lib/utils";
 
 export default async function Home() {
   function mainPage() {

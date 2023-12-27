@@ -1,10 +1,8 @@
 import { getUsers } from "@/lib/db/db";
-import { NextApiRequest } from "next";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import authOptions from "../../auth/authoptions";
 import { NextRequest, NextResponse } from "next/server";
-import { getUser, getUserByEmail, initUser } from "@/lib/db/users";
-import { request } from "http";
+import { getUserByEmail, initUser } from "@/lib/db/users";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);

@@ -17,18 +17,18 @@ export default function ClientPage(props: {
     if (self?._id.toString() === user._id.toString())
       initialRelationship = "self";
     else if (
-      self?.friends.find((f) => f._id.toString() === self?._id.toString())
+      self?.friends.find((f) => f._id.toString() === user?._id.toString())
     )
       initialRelationship = "friend";
     else if (
       self?.outgoingFriendRequests.find(
-        (f) => f._id.toString() === self?._id.toString()
+        (f) => f._id.toString() === user?._id.toString()
       )
     )
       initialRelationship = "outgoing";
     else if (
       self?.incomingFriendRequests.find(
-        (f) => f._id.toString() === self?._id.toString()
+        (f) => f._id.toString() === user?._id.toString()
       )
     )
       initialRelationship = "incoming";

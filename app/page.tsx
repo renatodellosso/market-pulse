@@ -53,13 +53,7 @@ export default async function Home() {
 
   const session = await getServerSession(authOptions);
 
-  if (!session)
-    return (
-      <div className="h-screen flex items-center justify-center flex-col">
-        <div className=" text-lg pb-6">Market Pulse</div>
-        <SignIn />
-      </div>
-    );
+  if (!session) return mainPage();
 
   let user = await getUserByEmail(session.user.email!);
 

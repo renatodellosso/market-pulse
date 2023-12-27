@@ -120,6 +120,32 @@ export default function Dashboard(props: { user: User }) {
     setFriends([...friends, data.user]);
   }
 
+  async function removeFriend(e: any, id: string) {
+    e.preventDefault();
+
+    if (!confirm("Are you sure you want to remove this friend?")) return;
+
+    console.log("Removing friend", id);
+    const promise = fetch("/api/friends/remove?id=" + id);
+    toast.promise(promise, {
+      loading: "Removing friend...",
+      success: "Friend removed!",
+      error: "Failed to remove friend.",
+    });
+
+    const res = await promise;
+    const json = await res.json();
+
+    if (json.error) {
+      toast.error(json.error);
+      return;
+    }
+
+    const data = json.data as { user: NamedId };
+
+    setFriends(friends.filter((r) => r._id !== data.user._id));
+  }
+
   return (
     <div className="w-fit flex-1 flex items-center justify-center flex-row">
       <div className="w-[50%] flex flex-col items-center space-y-2">
@@ -243,10 +269,19 @@ export default function Dashboard(props: { user: User }) {
         ) : (
           <ul className="bg-neutral w-80 rounded-box pt-1">
             {friends.map((r) => (
-              <li key={r._id.toString()} className="pl-2 pb-1 text-sm">
+              <li
+                key={r._id.toString()}
+                className="pl-2 pb-1 text-sm flex flex-row justify-between items-center"
+              >
                 <Link className="link" href={`/profile/${r._id.toString()}`}>
                   {r.name}
                 </Link>
+                <button
+                  className="btn btn-error btn-sm w-[30%] float-right"
+                  onClick={(e) => removeFriend(e, r._id.toString())}
+                >
+                  Remove
+                </button>
               </li>
             ))}
           </ul>

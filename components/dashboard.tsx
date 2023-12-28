@@ -69,6 +69,17 @@ export default function Dashboard(props: { user: User }) {
     }
   }
 
+  function userElement(user: UserId) {
+    return (
+      <div className="flex flex-row">
+        <Avatar src={user.image} alt={`${user.name}'s Profile Picture`} />
+        <Link className="link" href={`/profile/${user._id.toString()}`}>
+          {user.name}
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="w-fit flex-1 flex items-center justify-center flex-row">
       <div className="w-[50%] flex flex-col items-center space-y-2">
@@ -132,10 +143,7 @@ export default function Dashboard(props: { user: User }) {
                 key={r._id.toString()}
                 className="menu-item flex flex-row justify-between items-center"
               >
-                <div className="flex flex-row">
-                  <Avatar src={r.image} alt={`${r.name}'s Profile Picture`} />
-                  {r.name}
-                </div>
+                {userElement(r)}
                 <div className="flex flex-row w-[55%]">
                   <button
                     className="btn btn-success btn-sm w-[50%]"
@@ -177,7 +185,7 @@ export default function Dashboard(props: { user: User }) {
                 key={r._id.toString()}
                 className="menu-item flex flex-row justify-between items-center"
               >
-                {r.name}
+                {userElement(r)}
                 <button
                   className="btn btn-error btn-sm w-[30%]"
                   onClick={(e) => declineFriendRequest(e, r._id.toString())}
@@ -199,9 +207,7 @@ export default function Dashboard(props: { user: User }) {
                 key={r._id.toString()}
                 className="pl-2 pr-2 pb-1 text-sm flex flex-row justify-between items-center"
               >
-                <Link className="link" href={`/profile/${r._id.toString()}`}>
-                  {r.name}
-                </Link>
+                {userElement(r)}
                 <button
                   className="btn btn-error btn-sm w-[30%] float-right"
                   onClick={(e) => removeFriend(e, r._id.toString())}

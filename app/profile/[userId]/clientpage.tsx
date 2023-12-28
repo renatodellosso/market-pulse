@@ -145,7 +145,7 @@ export default function ClientPage(props: {
     }
 
     return (
-      <li key={friend._id.toString()} className="flex flex-row">
+      <li key={friend._id.toString()} className="flex flex-row items-center">
         <Avatar src={friend.image} alt={`${friend.name}'s Profile Picture`} />
         <Link className="link" href={`/profile/${friend._id}`}>
           {friend.name} ({relationship})

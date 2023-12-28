@@ -71,10 +71,9 @@ export default function Dashboard(props: { user: User }) {
 
   function userElement(user: UserId) {
     return (
-      <div className="flex flex-row">
+      <div className="flex flex-row items-center">
         <Avatar src={user.image} alt={`${user.name}'s Profile Picture`} />
         <Link
-          className="link align-middle"
           href={`/profile/${user._id.toString()}`}
         >
           {user.name}

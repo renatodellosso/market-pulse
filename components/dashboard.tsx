@@ -73,7 +73,10 @@ export default function Dashboard(props: { user: User }) {
     return (
       <div className="flex flex-row">
         <Avatar src={user.image} alt={`${user.name}'s Profile Picture`} />
-        <Link className="link" href={`/profile/${user._id.toString()}`}>
+        <Link
+          className="link text-center"
+          href={`/profile/${user._id.toString()}`}
+        >
           {user.name}
         </Link>
       </div>

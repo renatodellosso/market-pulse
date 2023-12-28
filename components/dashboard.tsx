@@ -3,19 +3,20 @@
 import { User } from "next-auth";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { NamedId } from "../lib/types";
+import { NamedId, UserId } from "../lib/types";
 import { useState } from "react";
 import { friends } from "@/lib/friendutils";
+import Avatar from "./avatar";
 
 export default function Dashboard(props: { user: User }) {
   const { watchlists, reports } = props.user;
 
-  const [friendList, setFriendList] = useState<NamedId[]>(props.user.friends);
+  const [friendList, setFriendList] = useState<UserId[]>(props.user.friends);
   const [incomingFriendRequests, setIncomingFriendRequests] = useState<
-    NamedId[]
+    UserId[]
   >(props.user.incomingFriendRequests);
   const [outgoingFriendRequests, setOutgoingFriendRequests] = useState<
-    NamedId[]
+    UserId[]
   >(props.user.outgoingFriendRequests);
 
   async function newWatchlist() {
@@ -131,7 +132,10 @@ export default function Dashboard(props: { user: User }) {
                 key={r._id.toString()}
                 className="menu-item flex flex-row justify-between items-center"
               >
-                {r.name}
+                <div className="flex flex-row">
+                  <Avatar src={r.image} alt={`${r.name}'s Profile Picture`} />
+                  {r.name}
+                </div>
                 <div className="flex flex-row w-[55%]">
                   <button
                     className="btn btn-success btn-sm w-[50%]"

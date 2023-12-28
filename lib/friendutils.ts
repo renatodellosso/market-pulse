@@ -1,8 +1,8 @@
 import toast from "react-hot-toast";
-import { NamedId } from "./types";
+import { NamedId, UserId } from "./types";
 import { User } from "next-auth";
 export class friends {
-  static async sendFriendRequest(e: any): Promise<NamedId | null | undefined> {
+  static async sendFriendRequest(e: any): Promise<UserId | null | undefined> {
     e.preventDefault();
 
     const email = (
@@ -30,14 +30,14 @@ export class friends {
       return;
     }
 
-    const data = json.data as { user: NamedId };
+    const data = json.data as { user: UserId };
     return data.user;
   }
 
   static async declineFriendRequest(
     e: any,
     id: string
-  ): Promise<NamedId | undefined> {
+  ): Promise<UserId | undefined> {
     e.preventDefault();
 
     console.log("Declining friend request", id);
@@ -55,14 +55,14 @@ export class friends {
       return;
     }
 
-    const data = json.data as { user: NamedId };
+    const data = json.data as { user: UserId };
     return data.user;
   }
 
   static async acceptFriendRequest(
     e: any,
     id: string
-  ): Promise<NamedId | undefined> {
+  ): Promise<UserId | undefined> {
     e.preventDefault();
 
     console.log("Accepting friend request", id);
@@ -81,11 +81,11 @@ export class friends {
       return;
     }
 
-    const data = json.data as { user: NamedId };
+    const data = json.data as { user: UserId };
     return data.user;
   }
 
-  static async removeFriend(e: any, id: string): Promise<NamedId | undefined> {
+  static async removeFriend(e: any, id: string): Promise<UserId | undefined> {
     e.preventDefault();
 
     if (!confirm("Are you sure you want to remove this friend?")) return;
@@ -106,7 +106,7 @@ export class friends {
       return;
     }
 
-    const data = json.data as { user: NamedId };
+    const data = json.data as { user: UserId };
     return data.user;
   }
 }

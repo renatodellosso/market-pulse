@@ -15,7 +15,7 @@ export default function NavBar() {
       <Avatar
         src={
           session.user?.image ??
-          "https://cdn.britannica.com/73/103073-050-EB4992D4/Richard-M-Nixon-1969.jpg "
+          "https://cdn.britannica.com/73/103073-050-EB4992D4/Richard-M-Nixon-1969.jpg"
         }
         alt="Avatar"
       />

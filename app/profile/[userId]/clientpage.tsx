@@ -1,7 +1,8 @@
 "use client";
 
+import Avatar from "@/components/avatar";
 import { friends } from "@/lib/friendutils";
-import { NamedId } from "@/lib/types";
+import { NamedId, UserId } from "@/lib/types";
 import { User } from "next-auth";
 import Link from "next/link";
 import { useState } from "react";
@@ -119,7 +120,7 @@ export default function ClientPage(props: {
     }
   }
 
-  function getFriendListItem(friend: NamedId) {
+  function getFriendListItem(friend: UserId) {
     let relationship = "";
 
     if (self) {
@@ -144,7 +145,8 @@ export default function ClientPage(props: {
     }
 
     return (
-      <li key={friend._id.toString()}>
+      <li key={friend._id.toString()} className="flex flex-row">
+        <Avatar src={friend.image} alt={`${friend.name}'s Profile Picture`} />
         <Link className="link" href={`/profile/${friend._id}`}>
           {friend.name} ({relationship})
         </Link>
@@ -154,8 +156,19 @@ export default function ClientPage(props: {
 
   return (
     <div className=" w-96">
-      <h1 className="text-2xl text-primary">{user.name}</h1>
-      {relationshipElement}
+      <div className="flex flex-row">
+        <Avatar
+          src={
+            user?.image ??
+            "https://cdn.britannica.com/73/103073-050-EB4992D4/Richard-M-Nixon-1969.jpg"
+          }
+          alt="Profile Picture"
+        />
+        <div className="pl-1">
+          <h1 className="text-2xl text-primary">{user.name}</h1>
+          {relationshipElement}
+        </div>
+      </div>
       <div className="pb-4">
         <h2 className="text-xl text-secondary">Watchlists</h2>
         <ul>

@@ -71,6 +71,7 @@ export async function GET(req: NextRequest) {
         incomingFriendRequests: {
           _id: session.user._id,
           name: session.user.name!,
+          image: session.user.image!,
         },
       },
     }
@@ -83,6 +84,7 @@ export async function GET(req: NextRequest) {
         outgoingFriendRequests: {
           _id: user._id,
           name: user.name!,
+          image: user.image!,
         },
       },
     }
@@ -94,6 +96,7 @@ export async function GET(req: NextRequest) {
       user: {
         _id: user._id,
         name: user.name,
+        image: user.image,
       },
     },
   });

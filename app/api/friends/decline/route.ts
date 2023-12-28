@@ -74,6 +74,7 @@ export async function GET(req: NextRequest) {
       user: {
         _id: user._id,
         name: user.name,
+        image: user.image,
       },
     },
   });

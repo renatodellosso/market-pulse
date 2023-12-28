@@ -7,6 +7,10 @@ export interface NamedId {
   _id: ObjectId | string;
 }
 
+export interface UserId extends NamedId {
+  image: string;
+}
+
 export interface Watchlist {
   _id: ObjectId | string;
   ownerEmail: string;
@@ -136,9 +140,9 @@ declare module "next-auth" {
     _id: ObjectId | string;
     watchlists: NamedId[];
     reports: NamedId[];
-    friends: NamedId[];
-    incomingFriendRequests: NamedId[];
-    outgoingFriendRequests: NamedId[];
+    friends: UserId[];
+    incomingFriendRequests: UserId[];
+    outgoingFriendRequests: UserId[];
   }
 
   interface Session extends DefaultSession {

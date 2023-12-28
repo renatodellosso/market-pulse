@@ -49,6 +49,7 @@ export async function GET(req: NextRequest) {
         friends: {
           _id: new ObjectId(id),
           name: user.name!,
+          image: user.image!,
         },
       },
     }
@@ -66,6 +67,7 @@ export async function GET(req: NextRequest) {
         friends: {
           _id: new ObjectId(session.user._id),
           name: session.user.name!,
+          image: session.user.image!,
         },
       },
     }
@@ -77,6 +79,7 @@ export async function GET(req: NextRequest) {
       user: {
         _id: user._id,
         name: user.name,
+        image: user.image,
       },
     },
   });

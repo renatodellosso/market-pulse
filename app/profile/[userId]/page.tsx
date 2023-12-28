@@ -11,7 +11,6 @@ export default async function Page({ params }: { params: { userId: string } }) {
   const { userId } = params;
 
   let user;
-
   try {
     user = await getUser(userId);
   } catch {}
@@ -29,9 +28,8 @@ export default async function Page({ params }: { params: { userId: string } }) {
     session.user =
       (await getUserByEmail(session.user.email ?? "")) ?? session.user;
 
-  
-
   user = stringifyUser(user);
+
   if (session?.user) session.user = stringifyUser(session?.user);
 
   return <ClientPage user={user} self={session?.user} />;

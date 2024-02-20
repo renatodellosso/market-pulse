@@ -1,3 +1,5 @@
+console.log("Starting imports...");
+
 import { getReportsByFrequency } from "@/lib/db/reports";
 import { loadEnv } from "./envloader.mts";
 import { Email, ReportFrequency } from "@/lib/types";

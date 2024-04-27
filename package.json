@@ -10,7 +10,7 @@
         "backend": "npx tsx backend/main.ts"
     },
     "dependencies": {
-        "@auth/mongodb-adapter": "^2.0.3",
+        "@auth/mongodb-adapter": "^3.0.0",
         "@polygon.io/client-js": "github:polygon-io/client-js",
         "dotenv": "^16.3.1",
         "mongodb": "^6.2.0",

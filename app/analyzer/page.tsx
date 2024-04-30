@@ -12,7 +12,7 @@ export default function Page() {
 
         const text = await file.text();
 
-        // Parse file as csv
+        // Parse file as csv.
         const rows = text.split("\n");
         const headers = rows[0].split(",");
 

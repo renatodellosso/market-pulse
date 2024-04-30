@@ -10,7 +10,7 @@
         "backend": "npx tsx backend/main.ts"
     },
     "dependencies": {
-        "@auth/mongodb-adapter": "^2.0.3",
+        "@auth/mongodb-adapter": "^3.0.0",
         "@polygon.io/client-js": "github:polygon-io/client-js",
         "dotenv": "^16.3.1",
         "mongodb": "^6.2.0",
@@ -31,7 +31,7 @@
         "autoprefixer": "^10.0.1",
         "daisyui": "^4.0.0",
         "eslint": "^8.0.0",
-        "eslint-config-next": "14.1.4",
+        "eslint-config-next": "14.2.3",
         "postcss": "^8",
         "tailwindcss": "^3.3.0",
         "typescript": "^5"

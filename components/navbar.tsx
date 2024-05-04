@@ -11,7 +11,7 @@ export default function NavBar() {
     if (status !== "authenticated") return <></>;
 
     return (
-        <div className=" w-full flex flex-row justify-start items-center pl-2 space-x-2 sticky top-0 z-50">
+        <div className=" w-full flex flex-row justify-start items-center pl-2 space-x-2 sticky top-0 z-50 bg-black">
             <Avatar
                 src={
                     session.user?.image ??

@@ -15,9 +15,12 @@ export default function Page() {
         { [symbol: string]: Holding & { value: number } } | undefined
     >();
     const [individualStocks, setIndividualStocks] = useState<{
-        [symbol: string]: number;
+        [symbol: string]: { value: number; sector: string };
     }>({});
     const [categories, setCategories] = useState<{
+        [category: string]: number;
+    }>({});
+    const [individualSectors, setIndividualSectors] = useState<{
         [category: string]: number;
     }>({});
 
@@ -96,18 +99,21 @@ export default function Page() {
             },
         });
 
-        const { status, results } = (await response.json()) as {
+        const { status, individualHoldings } = (await response.json()) as {
             status: number;
-            results: { [symbol: string]: Holding & { value: number } };
+            individualHoldings: {
+                [symbol: string]: Holding & { value: number };
+            };
         };
 
         // Populate values and categories
-        for (const symbol in results) {
-            results[symbol].value = holdings[symbol]?.value ?? 0;
-            results[symbol].category ??= holdings[symbol]?.category ?? "";
+        for (const symbol in individualHoldings) {
+            individualHoldings[symbol].value = holdings[symbol]?.value ?? 0;
+            individualHoldings[symbol].sector ??=
+                holdings[symbol]?.category ?? "";
         }
 
-        console.log(results);
+        console.log(individualHoldings);
 
         setAnalyzing(false);
         document
@@ -115,59 +121,68 @@ export default function Page() {
             ?.classList.remove("collapse-open");
 
         // Sort results by value.
-        const sortedSymbols = Object.keys(results).sort(
-            (a, b) => results[b].value - results[a].value
+        const sortedSymbols = Object.keys(individualHoldings).sort(
+            (a, b) => individualHoldings[b].value - individualHoldings[a].value
         );
 
         const sortedResults = sortedSymbols.reduce((acc, symbol) => {
-            acc[symbol] = results[symbol];
+            acc[symbol] = individualHoldings[symbol];
             return acc;
         }, {} as { [symbol: string]: Holding & { value: number } });
 
         setResults(sortedResults);
 
         // Get individual stocks from each fund's holdings and items with no holdings
-        const individualStocks: { [symbol: string]: number } = {};
-        for (const symbol in results) {
-            const holding = results[symbol];
+        const individualStocks: {
+            [symbol: string]: { value: number; sector: string };
+        } = {};
+        for (const symbol in individualHoldings) {
+            const holding = individualHoldings[symbol];
             if (holding.holdings.length === 0) {
                 if (individualStocks[symbol])
-                    individualStocks[symbol] += holding.value;
-                else individualStocks[symbol] = holding.value;
+                    individualStocks[symbol].value += holding.value;
+                else
+                    individualStocks[symbol] = {
+                        value: holding.value,
+                        sector: holding.sector ?? "Unknown",
+                    };
             } else {
                 holding.holdings.forEach((stock) => {
                     if (individualStocks[stock.symbol])
-                        individualStocks[stock.symbol] +=
+                        individualStocks[stock.symbol].value +=
                             stock.percentage * holding.value;
                     else
-                        individualStocks[stock.symbol] =
-                            stock.percentage * holding.value;
+                        individualStocks[stock.symbol] = {
+                            value: stock.percentage * holding.value,
+                            sector: stock.category ?? "Unknown",
+                        };
                 });
             }
         }
 
         // Sort individual stocks by value.
         const sortedIndividualStocksKeys = Object.keys(individualStocks).sort(
-            (a, b) => individualStocks[b] - individualStocks[a]
+            (a, b) => individualStocks[b].value - individualStocks[a].value
         );
         const sortedIndividualStocks = sortedIndividualStocksKeys.reduce(
             (acc, symbol) => {
                 acc[symbol] = individualStocks[symbol];
                 return acc;
             },
-            {} as { [symbol: string]: number }
+            {} as { [symbol: string]: { value: number; sector: string } }
         );
 
+        console.log(sortedIndividualStocks);
         setIndividualStocks(sortedIndividualStocks);
 
         // Get categories and their values
         const categories: { [category: string]: number } = {};
-        for (const symbol in results) {
-            const holding = results[symbol];
-            if (holding.category) {
-                if (categories[holding.category])
-                    categories[holding.category] += holding.value;
-                else categories[holding.category] = holding.value;
+        for (const symbol in individualHoldings) {
+            const holding = individualHoldings[symbol];
+            if (holding.sector) {
+                if (categories[holding.sector])
+                    categories[holding.sector] += holding.value;
+                else categories[holding.sector] = holding.value;
             }
         }
 
@@ -186,6 +201,33 @@ export default function Page() {
 
         console.log(sortedCategories);
         setCategories(sortedCategories);
+
+        // Group individual holdings by sector
+        const individualSectors: { [sector: string]: number } = {};
+        for (const symbol in sortedIndividualStocks) {
+            const holding = sortedIndividualStocks[symbol];
+            if (holding.sector) {
+                if (individualSectors[holding.sector])
+                    individualSectors[holding.sector] += holding.value;
+                else individualSectors[holding.sector] = holding.value;
+            }
+        }
+
+        // Sort individual sectors by value.
+        const sortedIndividualSectorsKeys = Object.keys(individualSectors).sort(
+            (a, b) => individualSectors[b] - individualSectors[a]
+        );
+
+        const sortedIndividualSectors = sortedIndividualSectorsKeys.reduce(
+            (acc, sector) => {
+                acc[sector] = individualSectors[sector];
+                return acc;
+            },
+            {} as { [sector: string]: number }
+        );
+
+        console.log(sortedIndividualSectors);
+        setIndividualSectors(sortedIndividualSectors);
     }
 
     const headers = data ? Object.keys(data?.[0]) : undefined;
@@ -342,7 +384,7 @@ export default function Page() {
                                                                 totalValue
                                                         )}
                                                     </td>
-                                                    <td>{holding.category}</td>
+                                                    <td>{holding.sector}</td>
                                                 </tr>
                                             )
                                         )}
@@ -351,7 +393,7 @@ export default function Page() {
                                 {Object.keys(categories).length > 0 && (
                                     <div>
                                         <h3 className="text-white">
-                                            Categories
+                                            Sector (From Holdings)
                                         </h3>
                                         <table className="table">
                                             <thead>
@@ -388,24 +430,24 @@ export default function Page() {
                                     </div>
                                 )}
                                 <h3 className="text-white">
-                                    Individual Stocks
+                                    Sectors (From Your Funds' Holdings)
                                 </h3>
                                 <table className="table">
                                     <thead>
                                         <tr className="text-white">
-                                            <th>Symbol</th>
+                                            <th>Sector</th>
                                             <th>$ Value</th>
                                             <th>% Value</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {Object.entries(individualStocks).map(
-                                            ([symbol, value]) => (
+                                        {Object.entries(individualSectors).map(
+                                            ([sector, value]) => (
                                                 <tr
-                                                    key={symbol}
+                                                    key={sector}
                                                     className="hover:bg-slate-900"
                                                 >
-                                                    <td>{symbol}</td>
+                                                    <td>{sector}</td>
                                                     <td>
                                                         {formatMoney(value)}
                                                     </td>
@@ -414,6 +456,43 @@ export default function Page() {
                                                             value / totalValue
                                                         )}
                                                     </td>
+                                                </tr>
+                                            )
+                                        )}
+                                    </tbody>
+                                </table>
+                                <h3 className="text-white">
+                                    Individual Stocks
+                                </h3>
+                                <table className="table">
+                                    <thead>
+                                        <tr className="text-white">
+                                            <th>Symbol</th>
+                                            <th>$ Value</th>
+                                            <th>% Value</th>
+                                            <th>Sector</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {Object.entries(individualStocks).map(
+                                            ([symbol, security]) => (
+                                                <tr
+                                                    key={symbol}
+                                                    className="hover:bg-slate-900"
+                                                >
+                                                    <td>{symbol}</td>
+                                                    <td>
+                                                        {formatMoney(
+                                                            security.value
+                                                        )}
+                                                    </td>
+                                                    <td>
+                                                        {formatPercentage(
+                                                            security.value /
+                                                                totalValue
+                                                        )}
+                                                    </td>
+                                                    <td>{security.sector}</td>
                                                 </tr>
                                             )
                                         )}

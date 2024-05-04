@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import yahooFinance from "yahoo-finance2";
 
 export type Holding = {
-    category?: string;
-    holdings: { symbol: string; percentage: number }[];
+    sector?: string;
+    holdings: { symbol: string; percentage: number; category?: string }[];
 };
 
 export async function POST(req: NextRequest) {
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
             { status: 400 }
         );
 
-    const results: {
+    const individualHoldings: {
         [symbol: string]: Holding;
     } = {};
 
@@ -24,20 +24,34 @@ export async function POST(req: NextRequest) {
             const data = await yahooFinance.quoteSummary(symbol, {
                 modules: ["assetProfile", "summaryProfile", "topHoldings"],
             });
-            results[symbol] = {
-                category: data.assetProfile?.category,
-                holdings:
-                    data.topHoldings?.holdings.map((holding) => ({
+
+            let holdings;
+            if (data.topHoldings?.holdings) {
+                const holdingsPromises = data.topHoldings.holdings.map(
+                    async (holding) => ({
                         symbol: holding.symbol,
                         percentage: holding.holdingPercent,
-                    })) ?? [],
+                        category: await yahooFinance
+                            .quoteSummary(holding.symbol, {
+                                modules: ["assetProfile"],
+                            })
+                            .then((data) => data.assetProfile?.sector),
+                    })
+                );
+
+                holdings = await Promise.all(holdingsPromises);
+            }
+
+            individualHoldings[symbol] = {
+                sector: data.assetProfile?.category,
+                holdings: holdings ?? [],
             };
         } catch (error) {
-            results[symbol] = {
+            individualHoldings[symbol] = {
                 holdings: [],
             };
         }
     }
 
-    return NextResponse.json({ status: 200, results: results });
+    return NextResponse.json({ status: 200, individualHoldings });
 }

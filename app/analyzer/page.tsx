@@ -425,7 +425,7 @@ export default function Page() {
                                     </div>
                                 )}
                                 <h3 className="text-white">
-                                    Sectors (From Your Funds' Holdings)
+                                    {"Sectors (From Your Funds' Holdings)"}
                                 </h3>
                                 <table className="table">
                                     <thead>

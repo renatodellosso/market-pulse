@@ -113,8 +113,6 @@ export default function Page() {
                 holdings[symbol]?.category ?? "";
         }
 
-        console.log(individualHoldings);
-
         setAnalyzing(false);
         document
             .getElementById("set-up-collapse")
@@ -172,7 +170,6 @@ export default function Page() {
             {} as { [symbol: string]: { value: number; sector: string } }
         );
 
-        console.log(sortedIndividualStocks);
         setIndividualStocks(sortedIndividualStocks);
 
         // Get categories and their values
@@ -199,7 +196,6 @@ export default function Page() {
             {} as { [category: string]: number }
         );
 
-        console.log(sortedCategories);
         setCategories(sortedCategories);
 
         // Group individual holdings by sector
@@ -226,7 +222,6 @@ export default function Page() {
             {} as { [sector: string]: number }
         );
 
-        console.log(sortedIndividualSectors);
         setIndividualSectors(sortedIndividualSectors);
     }
 

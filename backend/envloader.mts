@@ -4,7 +4,7 @@ export function loadEnv() {
   console.log("Loading environment variables...");
 
   dotenv.config({
-    path: __dirname + "/../.env.backend",
+    path: __dirname + "./../.env.backend",
   });
 
   // Check if all environment variables are set

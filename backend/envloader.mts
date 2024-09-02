@@ -1,10 +1,10 @@
 import * as dotenv from "dotenv";
 
 export function loadEnv() {
-  console.log("Loading environment variables from ./../.env.backend");
+  console.log("Loading environment variables...");
 
   dotenv.config({
-    path: [".env", __dirname + "/../.env"],
+    path: path.resolve(__dirname, "../.env"),
     debug: true
   });
 

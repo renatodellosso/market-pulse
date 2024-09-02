@@ -4,10 +4,16 @@ import path from "path";
 export function loadEnv() {
   console.log("Loading environment variables...");
 
-  dotenv.config({
+  const result = dotenv.config({
     path: path.resolve(__dirname, "../.env"),
     debug: true
   });
+
+  if (result.error) {
+    throw result.error;
+  }
+  
+  console.log(result.parsed);
 
   // Check if all environment variables are set
   if (!process.env.MONGODB_URI)

@@ -4,7 +4,7 @@ export function loadEnv() {
   console.log("Loading environment variables from ./../.env.backend");
 
   dotenv.config({
-    path: [".env", "../.env"],
+    path: [".env", __dirname + "/../.env"],
     debug: true
   });
 

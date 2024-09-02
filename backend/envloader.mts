@@ -1,4 +1,5 @@
 import * as dotenv from "dotenv";
+import path from "path";
 
 export function loadEnv() {
   console.log("Loading environment variables...");

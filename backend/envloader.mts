@@ -12,12 +12,10 @@ export function loadEnv() {
   if (result.error) {
     throw result.error;
   }
-  
-  console.log(result.parsed);
 
   // Check if all environment variables are set
   if (!process.env.MONGODB_URI)
-    throw new Error("MONGO_URI environment variable not set");
+    throw new Error("MONGODB_URI environment variable not set");
   if (!process.env.EMAIL_USERNAME)
     throw new Error("EMAIL_USERNAME environment variable not set");
   if (!process.env.EMAIL_PASSWORD)

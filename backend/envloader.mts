@@ -5,8 +5,7 @@ export function loadEnv() {
   console.log("Loading environment variables...");
 
   const result = dotenv.config({
-    path: path.resolve(__dirname, "../.env"),
-    debug: true
+    path: path.resolve(__dirname, "../.env")
   });
 
   if (result.error) {

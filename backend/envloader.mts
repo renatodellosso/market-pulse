@@ -1,11 +1,9 @@
 import * as dotenv from "dotenv";
 
 export function loadEnv() {
-  console.log("Loading environment variables from " + __dirname + "./../.env.backend");
+  console.log("Loading environment variables from ./../.env.backend");
 
-  dotenv.config({
-    path: __dirname + "./../.env.backend",
-  });
+  dotenv.config();
 
   // Check if all environment variables are set
   if (!process.env.MONGODB_URI)

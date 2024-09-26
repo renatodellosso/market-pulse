@@ -13,6 +13,7 @@ import { sendEmails } from "./emailhandler.mjs";
 import { isMarketOpen } from "./apihandler.mts";
 
 console.log("Starting backend...");
+process.title = "market-pulse-backend";
 
 loadEnv();
 

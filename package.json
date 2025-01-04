@@ -14,7 +14,7 @@
         "@polygon.io/client-js": "github:polygon-io/client-js",
         "dotenv": "^16.3.1",
         "mongodb": "^6.2.0",
-        "next": "^14.2.15",
+        "next": "^14.2.22",
         "next-auth": "^4.24.4",
         "nodemailer": "^6.9.7",
         "react": "^18",
